@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questionário de Consumo Alimentar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .question-group {
+      margin-bottom: 25px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .question-text {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .options {
+      display: flex;
+      gap: 15px;
+    }
+    .option {
+      display: flex;
+      align-items: center;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .checkbox-option {
+      display: flex;
+      align-items: center;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .save-draft {
+      background: #f39c12;
+      color: white;
+    }
+    .submit {
+      background: #2ecc71;
+      color: white;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #09f;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    #mensagem {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Questionário de Consumo Alimentar</h1>
+  
+  <form id="questionarioForm">
+    <div class="question-group">
+      <div class="question">
+        <div class="question-text">Você tem costume de fazer as refeições mexendo no computador ou celular?</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="dispositivoRefeicao" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="dispositivoRefeicao" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="dispositivoRefeicao" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <div class="question">
+        <div class="question-text">Quais refeições você faz ao longo do dia?</div>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="refeicoesDia" value="Café da manhã"> Café da manhã</label>
+          <label class="checkbox-option"><input type="checkbox" name="refeicoesDia" value="Lanche da manhã"> Lanche da manhã</label>
+          <label class="checkbox-option"><input type="checkbox" name="refeicoesDia" value="Almoço"> Almoço</label>
+          <label class="checkbox-option"><input type="checkbox" name="refeicoesDia" value="Lanche da tarde"> Lanche da tarde</label>
+          <label class="checkbox-option"><input type="checkbox" name="refeicoesDia" value="Jantar"> Jantar</label>
+          <label class="checkbox-option"><input type="checkbox" name="refeicoesDia" value="Ceia/lanche da noite"> Ceia/lanche da noite</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <h3>ONTEM, VOCÊ CONSUMIU:</h3>
+      
+      <div class="question">
+        <div class="question-text">Feijão</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="Feijão" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="Feijão" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="Feijão" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Frutas frescas (não considerar suco de frutas)</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="Frutas frescas" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="Frutas frescas" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="Frutas frescas" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Verduras ou legumes (não considerar batata, mandioca, aipim, macaxeira, cará e inhame)</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="Verduras ou legumes" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="Verduras ou legumes" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="Verduras ou legumes" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Hambúrguer e/ou embutidos (presunto, mortadela, salame, linguiça, salsicha)</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="Hambúrguer e/ou embutidos" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="Hambúrguer e/ou embutidos" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="Hambúrguer e/ou embutidos" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Bebidas adoçadas (refrigerante, suco de caixinha, suco em pó, néctar, suco de fruta com adição de açúcar, xaropes de guaraná/groselha)</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="Bebidas adoçadas" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="Bebidas adoçadas" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="Bebidas adoçadas" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Macarrão instantâneo, salgadinhos de pacote ou biscoitos salgados</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="Macarrão instantâneo" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="Macarrão instantâneo" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="Macarrão instantâneo" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="question-text">Biscoitos recheados, doces ou guloseimas (balas, pirulitos, chiclete, caramelo, gelatina)</div>
+        <div class="options">
+          <label class="option"><input type="radio" name="Biscoitos recheados" value="SIM" required> SIM</label>
+          <label class="option"><input type="radio" name="Biscoitos recheados" value="NÃO"> NÃO</label>
+          <label class="option"><input type="radio" name="Biscoitos recheados" value="NÃO SEI"> NÃO SEI</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <div class="question">
+        <div class="question-text">Comentários adicionais sobre hábitos alimentares:</div>
+        <textarea name="comentarios" rows="4"></textarea>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button type="button" class="save-draft" id="btnSalvarRascunho">Salvar Rascunho</button>
+      <button type="submit" class="submit">Enviar Questionário</button>
+    </div>
+  </form>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Processando...</p>
+  </div>
+
+  <div id="mensagem"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const participanteId = urlParams.get('participanteId');
+      
+      if (!participanteId) {
+        document.getElementById('mensagem').innerHTML = `
+          <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
+            Erro: ID do participante não encontrado. Por favor, comece pelo cadastro.
+          </p>
+        `;
+        return;
+      }
+
+      // Carregar rascunho existente se houver
+      try {
+        document.getElementById('loading').style.display = 'block';
+        const response = await fetch(`/api/consumo-alimentar/${participanteId}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            preencherFormulario(data);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar rascunho:', error);
+        document.getElementById('mensagem').innerHTML = `
+          <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
+            Erro ao carregar rascunho: ${error.message}
+          </p>
+        `;
+      } finally {
+        document.getElementById('loading').style.display = 'none';
+      }
+
+      // Salvar rascunho
+      document.getElementById('btnSalvarRascunho').addEventListener('click', async () => {
+        const formData = obterDadosFormulario();
+        
+        try {
+          document.getElementById('loading').style.display = 'block';
+          const response = await fetch(`/api/consumo-alimentar/${participanteId}/rascunho`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+          
+          if (response.ok) {
+            document.getElementById('mensagem').innerHTML = `
+              <p style="color: green; padding: 10px; background: #eeffee; border-radius: 4px;">
+                Rascunho salvo com sucesso! Você pode voltar mais tarde para continuar.
+              </p>
+            `;
+          } else {
+            throw new Error('Erro ao salvar rascunho');
+          }
+        } catch (error) {
+          console.error('Erro ao salvar rascunho:', error);
+          document.getElementById('mensagem').innerHTML = `
+            <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
+              Erro ao salvar rascunho: ${error.message}
+            </p>
+          `;
+        } finally {
+          document.getElementById('loading').style.display = 'none';
+        }
+      });
+
+      // Enviar questionário
+      document.getElementById('questionarioForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = obterDadosFormulario();
+        
+        try {
+          document.getElementById('loading').style.display = 'block';
+          const response = await fetch(`/api/consumo-alimentar/${participanteId}/finalizar`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...formData, rascunho: false }),
+          });
+          
+          if (response.ok) {
+            window.location.href = '/confirmacao.html';
+          } else {
+            throw new Error('Erro ao enviar questionário');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar questionário:', error);
+          document.getElementById('mensagem').innerHTML = `
+            <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
+              Erro ao enviar questionário: ${error.message}
+            </p>
+          `;
+        } finally {
+          document.getElementById('loading').style.display = 'none';
+        }
+      });
+
+      function obterDadosFormulario() {
+        const form = document.getElementById('questionarioForm');
+        const formData = {
+          dispositivoRefeicao: form.querySelector('input[name="dispositivoRefeicao"]:checked')?.value,
+          refeicoesDia: Array.from(form.querySelectorAll('input[name="refeicoesDia"]:checked')).map(el => el.value),
+          consumoAlimentos: [
+            { alimento: 'Feijão', consumo: form.querySelector('input[name="Feijão"]:checked')?.value },
+            { alimento: 'Frutas frescas', consumo: form.querySelector('input[name="Frutas frescas"]:checked')?.value },
+            { alimento: 'Verduras ou legumes', consumo: form.querySelector('input[name="Verduras ou legumes"]:checked')?.value },
+            { alimento: 'Hambúrguer e/ou embutidos', consumo: form.querySelector('input[name="Hambúrguer e/ou embutidos"]:checked')?.value },
+            { alimento: 'Bebidas adoçadas', consumo: form.querySelector('input[name="Bebidas adoçadas"]:checked')?.value },
+            { alimento: 'Macarrão instantâneo', consumo: form.querySelector('input[name="Macarrão instantâneo"]:checked')?.value },
+            { alimento: 'Biscoitos recheados', consumo: form.querySelector('input[name="Biscoitos recheados"]:checked')?.value }
+          ],
+          comentarios: form.comentarios.value,
+          rascunho: true
+        };
+        
+        // Remover itens não selecionados
+        formData.consumoAlimentos = formData.consumoAlimentos.filter(item => item.consumo);
+        
+        return formData;
+      }
+
+      function preencherFormulario(data) {
+        // Dispositivo durante refeição
+        if (data.dispositivoRefeicao) {
+          const radio = document.querySelector(`input[name="dispositivoRefeicao"][value="${data.dispositivoRefeicao}"]`);
+          if (radio) radio.checked = true;
+        }
+
+        // Refeições do dia
+        if (data.refeicoesDia && data.refeicoesDia.length) {
+          data.refeicoesDia.forEach(refeicao => {
+            const checkbox = document.querySelector(`input[name="refeicoesDia"][value="${refeicao}"]`);
+            if (checkbox) checkbox.checked = true;
+          });
+        }
+
+        // Consumo de alimentos
+        if (data.consumoAlimentos && data.consumoAlimentos.length) {
+          data.consumoAlimentos.forEach(item => {
+            const radio = document.querySelector(`input[name="${item.alimento}"][value="${item.consumo}"]`);
+            if (radio) radio.checked = true;
+          });
+        }
+
+        // Comentários
+        if (data.comentarios) {
+          document.querySelector('textarea[name="comentarios"]').value = data.comentarios;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
