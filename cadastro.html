@@ -113,6 +113,7 @@
     </div>
     <button type="submit">Cadastrar</button>
   </form>
+  <p id="mensagem" style="text-align:center; margin-top:15px;"></p>
   <p style="text-align:center; margin-top:15px;">
     Já tem cadastro? <a href="/src/models/src/controllers/src/middlewares/src/public/login.html">Faça login</a>
   </p>
@@ -141,13 +142,15 @@
         const text = await response.text();
         const data = text ? JSON.parse(text) : {};
         if(response.ok) {
-          alert('Cadastro realizado com sucesso!');
-          window.location.href = '/src/models/src/controllers/src/middlewares/src/public/login.html';
+          document.getElementById('mensagem').textContent = data.message; // Success message
+          setTimeout(() => {
+            window.location.href = '/src/models/src/controllers/src/middlewares/src/public/login.html';
+          }, 2000);
         } else {
           throw new Error(data.error || 'Erro no cadastro');
         }
       } catch(error) {
-        alert('Erro: ' + error.message);
+        document.getElementById('mensagem').textContent = 'Erro: ' + error.message;
       }
     });
   </script>
