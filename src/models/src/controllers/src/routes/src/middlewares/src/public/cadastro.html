@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro de Participante</title>
+  <title>Cadastro e Login</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,11 +12,18 @@
       margin: 0 auto;
       padding: 20px;
       color: #333;
+      background-color: #f9f9f9;
     }
     h1 {
       color: #2c3e50;
       text-align: center;
       margin-bottom: 30px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     .form-group {
       margin-bottom: 15px;
@@ -32,6 +39,11 @@
       border: 1px solid #ddd;
       border-radius: 4px;
       box-sizing: border-box;
+      transition: border-color 0.2s ease-in-out;
+    }
+    input:focus, select:focus {
+      border-color: #4CAF50;
+      outline: none;
     }
     .hidden-field {
       display: none;
@@ -45,11 +57,12 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 16px;
+      transition: background-color 0.2s ease-in-out;
     }
     button:hover {
       background-color: #45a049;
     }
-    #mensagem {
+    #mensagem, #mensagemLogin {
       margin-top: 20px;
       padding: 10px;
       border-radius: 4px;
@@ -72,138 +85,175 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      form {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Cadastro de Participante</h1>
+  <h1>Cadastro e Login</h1>
   
-  <form id="formParticipante">
-    <!-- Dados Pessoais -->
-    <div class="form-group">
-      <label for="nome">Nome completo*</label>
-      <input type="text" id="nome" required>
-    </div>
-    
-    <div class="form-group">
-      <label for="idade">Idade*</label>
-      <input type="number" id="idade" min="0" max="120" required>
-    </div>
-    
-    <!-- Gênero -->
-    <div class="form-group">
-      <label for="genero">Gênero*</label>
-      <select id="genero" required>
-        <option value="">Selecione...</option>
-        <option value="Masculino">Masculino</option>
-        <option value="Feminino">Feminino</option>
-        <option value="Transgênero">Transgênero</option>
-        <option value="Não binário">Não binário</option>
-        <option value="Outro">Outro</option>
-      </select>
-      <input type="text" id="generoPersonalizado" class="hidden-field" placeholder="Especifique o gênero">
-    </div>
-    
-    <!-- Raça/Cor -->
-    <div class="form-group">
-      <label for="racaCor">Raça/cor*</label>
-      <select id="racaCor" required>
-        <option value="">Selecione...</option>
-        <option value="Branco">Branco</option>
-        <option value="Preto">Preto</option>
-        <option value="Pardo">Pardo</option>
-        <option value="Povos originários">Povos originários</option>
-      </select>
-    </div>
-    
-    <!-- Escolaridade -->
-    <div class="form-group">
-      <label for="escolaridade">Escolaridade*</label>
-      <select id="escolaridade" required>
-        <option value="">Selecione...</option>
-        <option value="Ensino fundamental incompleto">Ensino fundamental incompleto</option>
-        <option value="Ensino fundamental completo">Ensino fundamental completo</option>
-        <option value="Ensino médio incompleto">Ensino médio incompleto</option>
-        <option value="Ensino médio completo">Ensino médio completo</option>
-        <option value="Graduação incompleta">Graduação incompleta</option>
-        <option value="Graduação completa">Graduação completa</option>
-        <option value="Prefere não dizer">Prefere não dizer</option>
-      </select>
-    </div>
-    
-    <!-- Estado Civil -->
-    <div class="form-group">
-      <label for="estadoCivil">Estado civil*</label>
-      <select id="estadoCivil" required>
-        <option value="">Selecione...</option>
-        <option value="Casado">Casado</option>
-        <option value="Viúvo">Viúvo</option>
-        <option value="Divorciado">Divorciado</option>
-        <option value="Separado">Separado</option>
-        <option value="Solteiro">Solteiro</option>
-        <option value="Prefere não dizer">Prefere não dizer</option>
-      </select>
-    </div>
-    
-    <!-- Situação de Emprego -->
-    <div class="form-group">
-      <label for="situacaoEmprego">Situação de emprego*</label>
-      <select id="situacaoEmprego" required>
-        <option value="">Selecione...</option>
-        <option value="Meio período">Meio período</option>
-        <option value="Desempregado">Desempregado</option>
-        <option value="Incapaz de trabalhar">Incapaz de trabalhar</option>
-        <option value="Aposentado">Aposentado</option>
-        <option value="Prefere não dizer">Prefere não dizer</option>
-        <option value="Outro">Outro</option>
-      </select>
-      <input type="text" id="empregoPersonalizado" class="hidden-field" placeholder="Especifique a situação">
-    </div>
-    
-    <!-- Benefícios Sociais -->
-    <div class="form-group">
-      <label for="beneficiosSociais">Recebe algum benefício social?</label>
-      <select id="beneficiosSociais" multiple>
-        <option value="Nenhum">Nenhum</option>
-        <option value="Bolsa Família">Bolsa Família</option>
-        <option value="Outros">Outros</option>
-      </select>
-      <input type="text" id="outrosBeneficios" class="hidden-field" placeholder="Quais outros benefícios?">
-    </div>
-    
-    <!-- Número de Dependentes -->
-    <div class="form-group">
-      <label for="dependentes">Número de dependentes*</label>
-      <select id="dependentes" required>
-        <option value="">Selecione...</option>
-        <option value="0">Nenhum</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5 ou mais</option>
-        <option value="-1">Prefere não dizer</option>
-      </select>
-    </div>
-    
-    <!-- Religião -->
-    <div class="form-group">
-      <label for="religiao">Religião*</label>
-      <select id="religiao" required>
-        <option value="">Selecione...</option>
-        <option value="Católico">Católico</option>
-        <option value="Evangélico">Evangélico</option>
-        <option value="Candomblé">Candomblé</option>
-        <option value="Umbanda">Umbanda</option>
-        <option value="Espírita">Espírita</option>
-        <option value="Nenhum">Nenhum</option>
-        <option value="Prefere não dizer">Prefere não dizer</option>
-        <option value="Outro">Outro</option>
-      </select>
-      <input type="text" id="religiaoPersonalizada" class="hidden-field" placeholder="Especifique a religião">
-    </div>
-    
-    <button type="submit">Cadastrar e Ir para Questionário</button>
-  </form>
+  <!-- Cadastro Form oculto -->
+  <div id="cadastroForm" style="display:none;">
+    <form id="formParticipante">
+      <!-- Dados Pessoais -->
+      <div class="form-group">
+        <label for="nome">Nome completo*</label>
+        <input type="text" id="nome" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="idade">Idade*</label>
+        <input type="number" id="idade" min="0" max="120" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="emailCadastro">E-mail*</label>
+        <input type="email" id="emailCadastro" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="senhaCadastro">Senha*</label>
+        <input type="password" id="senhaCadastro" required>
+      </div>
+      
+      <!-- Gênero -->
+      <div class="form-group">
+        <label for="genero">Gênero*</label>
+        <select id="genero" required>
+          <option value="">Selecione...</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Feminino">Feminino</option>
+          <option value="Transgênero">Transgênero</option>
+          <option value="Não binário">Não binário</option>
+          <option value="Outro">Outro</option>
+        </select>
+        <input type="text" id="generoPersonalizado" class="hidden-field" placeholder="Especifique o gênero">
+      </div>
+      
+      <!-- Raça/Cor -->
+      <div class="form-group">
+        <label for="racaCor">Raça/cor*</label>
+        <select id="racaCor" required>
+          <option value="">Selecione...</option>
+          <option value="Branco">Branco</option>
+          <option value="Preto">Preto</option>
+          <option value="Pardo">Pardo</option>
+          <option value="Povos originários">Povos originários</option>
+        </select>
+      </div>
+      
+      <!-- Escolaridade -->
+      <div class="form-group">
+        <label for="escolaridade">Escolaridade*</label>
+        <select id="escolaridade" required>
+          <option value="">Selecione...</option>
+          <option value="Ensino fundamental incompleto">Ensino fundamental incompleto</option>
+          <option value="Ensino fundamental completo">Ensino fundamental completo</option>
+          <option value="Ensino médio incompleto">Ensino médio incompleto</option>
+          <option value="Ensino médio completo">Ensino médio completo</option>
+          <option value="Graduação incompleta">Graduação incompleta</option>
+          <option value="Graduação completa">Graduação completa</option>
+          <option value="Prefere não dizer">Prefere não dizer</option>
+        </select>
+      </div>
+      
+      <!-- Estado Civil -->
+      <div class="form-group">
+        <label for="estadoCivil">Estado civil*</label>
+        <select id="estadoCivil" required>
+          <option value="">Selecione...</option>
+          <option value="Casado">Casado</option>
+          <option value="Viúvo">Viúvo</option>
+          <option value="Divorciado">Divorciado</option>
+          <option value="Separado">Separado</option>
+          <option value="Solteiro">Solteiro</option>
+          <option value="Prefere não dizer">Prefere não dizer</option>
+        </select>
+      </div>
+      
+      <!-- Situação de Emprego -->
+      <div class="form-group">
+        <label for="situacaoEmprego">Situação de emprego*</label>
+        <select id="situacaoEmprego" required>
+          <option value="">Selecione...</option>
+          <option value="Meio período">Meio período</option>
+          <option value="Desempregado">Desempregado</option>
+          <option value="Incapaz de trabalhar">Incapaz de trabalhar</option>
+          <option value="Aposentado">Aposentado</option>
+          <option value="Prefere não dizer">Prefere não dizer</option>
+          <option value="Outro">Outro</option>
+        </select>
+        <input type="text" id="empregoPersonalizado" class="hidden-field" placeholder="Especifique a situação">
+      </div>
+      
+      <!-- Benefícios Sociais -->
+      <div class="form-group">
+        <label for="beneficiosSociais">Recebe algum benefício social?</label>
+        <select id="beneficiosSociais" multiple>
+          <option value="Nenhum">Nenhum</option>
+          <option value="Bolsa Família">Bolsa Família</option>
+          <option value="Outros">Outros</option>
+        </select>
+        <input type="text" id="outrosBeneficios" class="hidden-field" placeholder="Quais outros benefícios?">
+      </div>
+      
+      <!-- Número de Dependentes -->
+      <div class="form-group">
+        <label for="dependentes">Número de dependentes*</label>
+        <select id="dependentes" required>
+          <option value="">Selecione...</option>
+          <option value="0">Nenhum</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5 ou mais</option>
+          <option value="-1">Prefere não dizer</option>
+        </select>
+      </div>
+      
+      <!-- Religião -->
+      <div class="form-group">
+        <label for="religiao">Religião*</label>
+        <select id="religiao" required>
+          <option value="">Selecione...</option>
+          <option value="Católico">Católico</option>
+          <option value="Evangélico">Evangélico</option>
+          <option value="Candomblé">Candomblé</option>
+          <option value="Umbanda">Umbanda</option>
+          <option value="Espírita">Espírita</option>
+          <option value="Nenhum">Nenhum</option>
+          <option value="Prefere não dizer">Prefere não dizer</option>
+          <option value="Outro">Outro</option>
+        </select>
+        <input type="text" id="religiaoPersonalizada" class="hidden-field" placeholder="Especifique a religião">
+      </div>
+      
+      <button type="submit">Cadastrar e Ir para Questionário</button>
+    </form>
+  </div>
+  
+  <!-- Login Form (único visível) -->
+  <div id="loginForm">
+    <form id="formLogin">
+      <div class="form-group">
+        <label for="email">E-mail*</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="senha">Senha*</label>
+        <input type="password" id="senha" required>
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+    <div id="mensagemLogin"></div>
+  </div>
   
   <div class="loading" id="loading">
     <div class="spinner"></div>
@@ -213,97 +263,34 @@
   <div id="mensagem"></div>
   
   <script>
-    // Mostrar campos adicionais quando selecionar "Outro"
-    document.getElementById('genero').addEventListener('change', function() {
-      document.getElementById('generoPersonalizado').style.display = 
-        this.value === 'Outro' ? 'block' : 'none';
-    });
-    
-    document.getElementById('situacaoEmprego').addEventListener('change', function() {
-      document.getElementById('empregoPersonalizado').style.display = 
-        this.value === 'Outro' ? 'block' : 'none';
-    });
-    
-    document.getElementById('religiao').addEventListener('change', function() {
-      document.getElementById('religiaoPersonalizada').style.display = 
-        this.value === 'Outro' ? 'block' : 'none';
-    });
-    
-    document.getElementById('beneficiosSociais').addEventListener('change', function() {
-      const selected = Array.from(this.selectedOptions).map(opt => opt.value);
-      document.getElementById('outrosBeneficios').style.display = 
-        selected.includes('Outros') ? 'block' : 'none';
-    });
-
-    // Envio do formulário
-    document.getElementById('formParticipante').addEventListener('submit', async function(e) {
+    // Envio do formulário de login atualizado
+    document.getElementById('formLogin').addEventListener('submit', async function(e) {
       e.preventDefault();
-      
-      // Mostrar loading
-      document.getElementById('loading').style.display = 'block';
-      document.getElementById('mensagem').innerHTML = '';
-      
-      // Coletar dados do formulário
-      const participante = {
-        nome: document.getElementById('nome').value,
-        idade: parseInt(document.getElementById('idade').value),
-        genero: document.getElementById('genero').value,
-        racaCor: document.getElementById('racaCor').value,
-        escolaridade: document.getElementById('escolaridade').value,
-        estadoCivil: document.getElementById('estadoCivil').value,
-        situacaoEmprego: document.getElementById('situacaoEmprego').value,
-        dependentes: parseInt(document.getElementById('dependentes').value),
-        religiao: document.getElementById('religiao').value
+      const loginData = {
+        email: document.getElementById('email').value,
+        senha: document.getElementById('senha').value
       };
-
-      // Campos opcionais
-      if (document.getElementById('generoPersonalizado').style.display === 'block') {
-        participante.generoPersonalizado = document.getElementById('generoPersonalizado').value;
-      }
-      
-      if (document.getElementById('empregoPersonalizado').style.display === 'block') {
-        participante.empregoPersonalizado = document.getElementById('empregoPersonalizado').value;
-      }
-      
-      if (document.getElementById('religiaoPersonalizada').style.display === 'block') {
-        participante.religiaoPersonalizada = document.getElementById('religiaoPersonalizada').value;
-      }
-      
-      // Benefícios sociais
-      const beneficiosOptions = document.getElementById('beneficiosSociais');
-      const beneficios = Array.from(beneficiosOptions.selectedOptions)
-        .map(option => option.value === 'Outros' 
-          ? document.getElementById('outrosBeneficios').value 
-          : option.value)
-        .filter(value => value !== 'Nenhum');
-      
-      participante.beneficiosSociais = beneficios.length > 0 ? beneficios : ['Nenhum'];
-
       try {
-        const response = await fetch('/api/participantes', {
+        const response = await fetch('/api/login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(participante),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(loginData)
         });
-        
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {};
         
         if (response.ok) {
-          // Redirecionar para o questionário com o ID do participante
-          window.location.href = `/questionario-alimentar.html?participanteId=${data.data._id}`;
+          // Redireciona para a página do menu
+          window.location.href = '/menu.html';
         } else {
-          throw new Error(data.error || 'Erro ao cadastrar participante');
+          throw new Error(data.error || 'Erro no login');
         }
       } catch (error) {
-        document.getElementById('mensagem').innerHTML = `
+        document.getElementById('mensagemLogin').innerHTML = `
           <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
             Erro: ${error.message}
           </p>
         `;
-      } finally {
-        document.getElementById('loading').style.display = 'none';
       }
     });
   </script>

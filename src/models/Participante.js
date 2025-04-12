@@ -103,6 +103,18 @@ const ParticipanteSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  // New fields for cadastro e login
+  email: {
+    type: String,
+    required: [true, 'E-mail é obrigatório'],
+    unique: true,
+    lowercase: true,
+    trim: true
+  },
+  senha: {
+    type: String,
+    required: [true, 'Senha é obrigatória']
+  },
   // Controle
   dataCriacao: {
     type: Date,
