@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', true); // Configuração para evitar o aviso de depreciação
 const uri = process.env.MONGO_URI || 'mongodb://localhost/trabalho_de_sw';
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
