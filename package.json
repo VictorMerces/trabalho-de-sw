@@ -1,0 +1,19 @@
+{
+  "name": "trabalho-de-sw",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^6.0.1",
+    "mongoose": "^6.7.0",
+    "@sentry/node": "^7.68.0",
+    "swagger-ui-express": "^4.6.3",
+    "swagger-jsdoc": "^6.2.8",
+    "sequelize": "^6.28.0",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4"
+  }
+}

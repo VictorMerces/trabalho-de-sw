@@ -101,7 +101,7 @@
 <body>
   <h1>Questionário de Consumo Alimentar</h1>
   
-  <form id="questionarioForm">
+  <form id="questionarioForm" role="form" aria-label="Formulário de questionário de consumo alimentar">
     <div class="question-group">
       <div class="question">
         <div class="question-text">Você tem costume de fazer as refeições mexendo no computador ou celular?</div>
@@ -228,70 +228,35 @@
         return;
       }
 
-      // Carregar rascunho existente se houver
-      try {
-        document.getElementById('loading').style.display = 'block';
-        const response = await fetch(`/api/consumo-alimentar/${participanteId}`);
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (data) {
-            preencherFormulario(data);
-          }
-        }
-      } catch (error) {
-        console.error('Erro ao carregar rascunho:', error);
-        document.getElementById('mensagem').innerHTML = `
-          <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
-            Erro ao carregar rascunho: ${error.message}
-          </p>
-        `;
-      } finally {
-        document.getElementById('loading').style.display = 'none';
+      const form = document.getElementById('questionarioForm');
+      const loadingElem = document.getElementById('loading');
+      const mensagemElem = document.getElementById('mensagem');
+
+      // Função para extrair dados com cache de consultas
+      function obterDadosFormulario() {
+        return {
+          dispositivoRefeicao: form.querySelector('input[name="dispositivoRefeicao"]:checked')?.value,
+          refeicoesDia: Array.from(form.querySelectorAll('input[name="refeicoesDia"]:checked')).map(el => el.value),
+          consumoAlimentos: [
+            { alimento: 'Feijão', consumo: form.querySelector('input[name="Feijão"]:checked')?.value },
+            { alimento: 'Frutas frescas', consumo: form.querySelector('input[name="Frutas frescas"]:checked')?.value },
+            { alimento: 'Verduras ou legumes', consumo: form.querySelector('input[name="Verduras ou legumes"]:checked')?.value },
+            { alimento: 'Hambúrguer e/ou embutidos', consumo: form.querySelector('input[name="Hambúrguer e/ou embutidos"]:checked')?.value },
+            { alimento: 'Bebidas adoçadas', consumo: form.querySelector('input[name="Bebidas adoçadas"]:checked')?.value },
+            { alimento: 'Macarrão instantâneo', consumo: form.querySelector('input[name="Macarrão instantâneo"]:checked')?.value },
+            { alimento: 'Biscoitos recheados', consumo: form.querySelector('input[name="Biscoitos recheados"]:checked')?.value }
+          ].filter(item => item.consumo),
+          comentarios: form.comentarios.value,
+          rascunho: true
+        };
       }
 
-      // Salvar rascunho
-      document.getElementById('btnSalvarRascunho').addEventListener('click', async () => {
-        const formData = obterDadosFormulario();
-        
-        try {
-          document.getElementById('loading').style.display = 'block';
-          const response = await fetch(`/api/consumo-alimentar/${participanteId}/rascunho`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-          
-          if (response.ok) {
-            document.getElementById('mensagem').innerHTML = `
-              <p style="color: green; padding: 10px; background: #eeffee; border-radius: 4px;">
-                Rascunho salvo com sucesso! Você pode voltar mais tarde para continuar.
-              </p>
-            `;
-          } else {
-            throw new Error('Erro ao salvar rascunho');
-          }
-        } catch (error) {
-          console.error('Erro ao salvar rascunho:', error);
-          document.getElementById('mensagem').innerHTML = `
-            <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
-              Erro ao salvar rascunho: ${error.message}
-            </p>
-          `;
-        } finally {
-          document.getElementById('loading').style.display = 'none';
-        }
-      });
-
-      // Enviar questionário
-      document.getElementById('questionarioForm').addEventListener('submit', async (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = obterDadosFormulario();
         
         try {
-          document.getElementById('loading').style.display = 'block';
+          loadingElem.style.display = 'block';
           const response = await fetch(`/api/consumo-alimentar/${participanteId}/finalizar`, {
             method: 'PUT',
             headers: {
@@ -307,51 +272,28 @@
           }
         } catch (error) {
           console.error('Erro ao enviar questionário:', error);
-          document.getElementById('mensagem').innerHTML = `
+          mensagemElem.innerHTML = `
             <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
               Erro ao enviar questionário: ${error.message}
             </p>
           `;
         } finally {
-          document.getElementById('loading').style.display = 'none';
+          loadingElem.style.display = 'none';
         }
       });
 
-      function obterDadosFormulario() {
-        const form = document.getElementById('questionarioForm');
-        const formData = {
-          dispositivoRefeicao: form.querySelector('input[name="dispositivoRefeicao"]:checked')?.value,
-          refeicoesDia: Array.from(form.querySelectorAll('input[name="refeicoesDia"]:checked')).map(el => el.value),
-          consumoAlimentos: [
-            { alimento: 'Feijão', consumo: form.querySelector('input[name="Feijão"]:checked')?.value },
-            { alimento: 'Frutas frescas', consumo: form.querySelector('input[name="Frutas frescas"]:checked')?.value },
-            { alimento: 'Verduras ou legumes', consumo: form.querySelector('input[name="Verduras ou legumes"]:checked')?.value },
-            { alimento: 'Hambúrguer e/ou embutidos', consumo: form.querySelector('input[name="Hambúrguer e/ou embutidos"]:checked')?.value },
-            { alimento: 'Bebidas adoçadas', consumo: form.querySelector('input[name="Bebidas adoçadas"]:checked')?.value },
-            { alimento: 'Macarrão instantâneo', consumo: form.querySelector('input[name="Macarrão instantâneo"]:checked')?.value },
-            { alimento: 'Biscoitos recheados', consumo: form.querySelector('input[name="Biscoitos recheados"]:checked')?.value }
-          ],
-          comentarios: form.comentarios.value,
-          rascunho: true
-        };
-        
-        // Remover itens não selecionados
-        formData.consumoAlimentos = formData.consumoAlimentos.filter(item => item.consumo);
-        
-        return formData;
-      }
-
+      // Função para preencher o formulário usando dados cacheados, se necessário
       function preencherFormulario(data) {
         // Dispositivo durante refeição
         if (data.dispositivoRefeicao) {
-          const radio = document.querySelector(`input[name="dispositivoRefeicao"][value="${data.dispositivoRefeicao}"]`);
+          const radio = form.querySelector(`input[name="dispositivoRefeicao"][value="${data.dispositivoRefeicao}"]`);
           if (radio) radio.checked = true;
         }
 
         // Refeições do dia
         if (data.refeicoesDia && data.refeicoesDia.length) {
           data.refeicoesDia.forEach(refeicao => {
-            const checkbox = document.querySelector(`input[name="refeicoesDia"][value="${refeicao}"]`);
+            const checkbox = form.querySelector(`input[name="refeicoesDia"][value="${refeicao}"]`);
             if (checkbox) checkbox.checked = true;
           });
         }
@@ -359,16 +301,73 @@
         // Consumo de alimentos
         if (data.consumoAlimentos && data.consumoAlimentos.length) {
           data.consumoAlimentos.forEach(item => {
-            const radio = document.querySelector(`input[name="${item.alimento}"][value="${item.consumo}"]`);
+            const radio = form.querySelector(`input[name="${item.alimento}"][value="${item.consumo}"]`);
             if (radio) radio.checked = true;
           });
         }
 
         // Comentários
         if (data.comentarios) {
-          document.querySelector('textarea[name="comentarios"]').value = data.comentarios;
+          form.querySelector('textarea[name="comentarios"]').value = data.comentarios;
         }
       }
+
+      // Carregar rascunho existente se houver
+      try {
+        loadingElem.style.display = 'block';
+        const response = await fetch(`/api/consumo-alimentar/${participanteId}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data) {
+            preencherFormulario(data);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar rascunho:', error);
+        mensagemElem.innerHTML = `
+          <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
+            Erro ao carregar rascunho: ${error.message}
+          </p>
+        `;
+      } finally {
+        loadingElem.style.display = 'none';
+      }
+
+      // Salvar rascunho
+      document.getElementById('btnSalvarRascunho').addEventListener('click', async () => {
+        const formData = obterDadosFormulario();
+        
+        try {
+          loadingElem.style.display = 'block';
+          const response = await fetch(`/api/consumo-alimentar/${participanteId}/rascunho`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+          
+          if (response.ok) {
+            mensagemElem.innerHTML = `
+              <p style="color: green; padding: 10px; background: #eeffee; border-radius: 4px;">
+                Rascunho salvo com sucesso! Você pode voltar mais tarde para continuar.
+              </p>
+            `;
+          } else {
+            throw new Error('Erro ao salvar rascunho');
+          }
+        } catch (error) {
+          console.error('Erro ao salvar rascunho:', error);
+          mensagemElem.innerHTML = `
+            <p style="color: red; padding: 10px; background: #ffeeee; border-radius: 4px;">
+              Erro ao salvar rascunho: ${error.message}
+            </p>
+          `;
+        } finally {
+          loadingElem.style.display = 'none';
+        }
+      });
     });
   </script>
 </body>

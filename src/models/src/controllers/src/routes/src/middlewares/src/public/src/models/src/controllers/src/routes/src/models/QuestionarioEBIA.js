@@ -4,7 +4,8 @@ const EsquemaEBIA = new mongoose.Schema({
   participanteId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Participante',
-    required: false
+    required: false,
+    index: true // adicionado índice caso consultas por participante sejam necessárias
   },
   respostas: [{
     perguntaId: {
@@ -31,7 +32,8 @@ const EsquemaEBIA = new mongoose.Schema({
   },
   dataPreenchimento: {
     type: Date,
-    default: Date.now
+    default: Date.now,
+    index: true // índice para buscas por período
   },
   anonimo: {
     type: Boolean,

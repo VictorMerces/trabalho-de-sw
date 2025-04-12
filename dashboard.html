@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Questionários</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { text-align: center; }
+    .chart-container { width: 100%; max-width: 800px; margin: 30px auto; }
+    /* Novo estilo para as estatísticas */
+    .stats { max-width:800px; margin: 30px auto; padding:15px; background:#f3f3f3; border-radius:5px; }
+  </style>
+</head>
+<body>
+  <h1>Dashboard - Dados dos Questionários</h1>
+  
+  <!-- Gráfico para os dados EBIA -->
+  <div class="chart-container">
+    <h2>Distribuição de Classificações EBIA</h2>
+    <canvas id="chartEBIA"></canvas>
+  </div>
+  
+  <!-- Gráfico para os dados de Consumo Alimentar -->
+  <div class="chart-container">
+    <h2>Frequência de Consumo (Alimentos)</h2>
+    <canvas id="chartConsumo"></canvas>
+  </div>
+  
+  <!-- Nova área para estatísticas do Consumo Alimentar -->
+  <div class="stats" id="consumoStats">
+    <h3>Estatísticas do Consumo Alimentar</h3>
+    <p id="media"></p>
+    <p id="mediana"></p>
+    <p id="desvio"></p>
+  </div>
+  
+  <script>
+    async function fetchDadosEBIA() {
+      return {
+        SEGURANCA: 10,
+        INSEGURANCA_LEVE: 15,
+        INSEGURANCA_MODERADA: 8,
+        INSEGURANCA_GRAVE: 4
+      };
+    }
+    
+    async function fetchDadosConsumo() {
+      return {
+        'Feijão': 20,
+        'Frutas frescas': 15,
+        'Verduras ou legumes': 12,
+        'Hambúrguer e/ou embutidos': 5,
+        'Bebidas adoçadas': 18
+      };
+    }
+    
+    // Funções utilitárias para estatísticas descritivas
+    function calcularMedia(valores) {
+      const soma = valores.reduce((acc, curr) => acc + curr, 0);
+      return soma / valores.length;
+    }
+    
+    function calcularMediana(valores) {
+      const ordenados = [...valores].sort((a, b) => a - b);
+      const meio = Math.floor(ordenados.length / 2);
+      return (ordenados.length % 2 !== 0)
+        ? ordenados[meio]
+        : (ordenados[meio - 1] + ordenados[meio]) / 2;
+    }
+    
+    function calcularDesvioPadrao(valores, media) {
+      const variancia = valores.reduce((acc, val) => acc + Math.pow(val - media, 2), 0) / valores.length;
+      return Math.sqrt(variancia);
+    }
+    
+    function exibirEstatisticas(dados) {
+      const valores = Object.values(dados);
+      const media = calcularMedia(valores);
+      const mediana = calcularMediana(valores);
+      const desvio = calcularDesvioPadrao(valores, media);
+      
+      document.getElementById('media').textContent = `Média: ${media.toFixed(2)}`;
+      document.getElementById('mediana').textContent = `Mediana: ${mediana}`;
+      document.getElementById('desvio').textContent = `Desvio Padrão: ${desvio.toFixed(2)}`;
+    }
+    
+    async function renderCharts() {
+      const dadosEBIA = await fetchDadosEBIA();
+      const dadosConsumo = await fetchDadosConsumo();
+      
+      const labelsEBIA = Object.keys(dadosEBIA);
+      const quantidadesEBIA = Object.values(dadosEBIA);
+      
+      const ctxEBIA = document.getElementById('chartEBIA').getContext('2d');
+      new Chart(ctxEBIA, {
+        type: 'bar',
+        data: {
+          labels: labelsEBIA,
+          datasets: [{
+            label: 'Número de Questionários',
+            data: quantidadesEBIA,
+            backgroundColor: ['#4CAF50', '#FF9800', '#F44336', '#9C27B0']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+      
+      const labelsConsumo = Object.keys(dadosConsumo);
+      const quantidadesConsumo = Object.values(dadosConsumo);
+      
+      const ctxConsumo = document.getElementById('chartConsumo').getContext('2d');
+      new Chart(ctxConsumo, {
+        type: 'pie',
+        data: {
+          labels: labelsConsumo,
+          datasets: [{
+            label: 'Frequência',
+            data: quantidadesConsumo,
+            backgroundColor: ['#2196F3', '#8BC34A', '#FFC107', '#E91E63', '#00BCD4']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+      
+      // Exibir estatísticas dos dados de consumo
+      exibirEstatisticas(dadosConsumo);
+    }
+    
+    renderCharts();
+  </script>
+</body>
+</html>

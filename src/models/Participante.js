@@ -5,7 +5,8 @@ const ParticipanteSchema = new mongoose.Schema({
   nome: { 
     type: String, 
     required: [true, 'Nome é obrigatório'],
-    trim: true
+    trim: true,
+    maxlength: 100  // otimização para textos curtos
   },
   idade: {
     type: Number,
@@ -19,57 +20,39 @@ const ParticipanteSchema = new mongoose.Schema({
     enum: {
       values: ['Masculino', 'Feminino', 'Transgênero', 'Não binário', 'Outro'],
       message: 'Gênero inválido'
-    }
+    },
+    maxlength: 20
   },
   generoPersonalizado: {
     type: String,
-    trim: true
+    trim: true,
+    maxlength: 50
   },
   racaCor: {
     type: String,
     required: [true, 'Raça/cor é obrigatória'],
-    enum: ['Branco', 'Preto', 'Pardo', 'Povos originários', 'Prefere não dizer']
+    enum: ['Branco', 'Preto', 'Pardo', 'Povos originários', 'Prefere não dizer'],
+    maxlength: 30
   },
   escolaridade: {
-    type: String,
-    required: [true, 'Escolaridade é obrigatória'],
-    enum: [
-      'Ensino fundamental incompleto',
-      'Ensino fundamental completo',
-      'Ensino médio incompleto',
-      'Ensino médio completo',
-      'Graduação incompleta',
-      'Graduação completa',
-      'Prefere não dizer'
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Escolaridade',
+    required: [true, 'Escolaridade é obrigatória']
   },
   estadoCivil: {
-    type: String,
-    required: [true, 'Estado civil é obrigatório'],
-    enum: [
-      'Casado',
-      'Viúvo',
-      'Divorciado',
-      'Separado',
-      'Solteiro',
-      'Prefere não dizer'
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'EstadoCivil',
+    required: [true, 'Estado civil é obrigatório']
   },
   situacaoEmprego: {
-    type: String,
-    required: [true, 'Situação de emprego é obrigatória'],
-    enum: [
-      'Meio período',
-      'Desempregado',
-      'Incapaz de trabalhar',
-      'Aposentado',
-      'Prefere não dizer',
-      'Outro'
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SituacaoEmprego',
+    required: [true, 'Situação de emprego é obrigatória']
   },
   empregoPersonalizado: {
     type: String,
-    trim: true
+    trim: true,
+    maxlength: 50
   },
   beneficiosSociais: {
     type: [String],
@@ -77,7 +60,8 @@ const ParticipanteSchema = new mongoose.Schema({
   },
   outrosBeneficios: {
     type: String,
-    trim: true
+    trim: true,
+    maxlength: 100
   },
   dependentes: {
     type: Number,
@@ -86,22 +70,14 @@ const ParticipanteSchema = new mongoose.Schema({
     max: [20, 'Número máximo de dependentes é 20']
   },
   religiao: {
-    type: String,
-    required: [true, 'Religião é obrigatória'],
-    enum: [
-      'Católico',
-      'Evangélico',
-      'Candomblé',
-      'Umbanda',
-      'Espírita',
-      'Nenhum',
-      'Prefere não dizer',
-      'Outro'
-    ]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Religiao',
+    required: [true, 'Religião é obrigatória']
   },
   religiaoPersonalizada: {
     type: String,
-    trim: true
+    trim: true,
+    maxlength: 50
   },
   // New fields for cadastro e login
   email: {
@@ -109,11 +85,27 @@ const ParticipanteSchema = new mongoose.Schema({
     required: [true, 'E-mail é obrigatório'],
     unique: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    maxlength: 200
   },
   senha: {
     type: String,
-    required: [true, 'Senha é obrigatória']
+    required: [true, 'Senha é obrigatória'],
+    minlength: 60, // supondo hash com tamanho fixo, por exemplo bcrypt
+    maxlength: 60
+  },
+  // Nova funcionalidade de geolocalização
+  localizacao: {
+    latitude: {
+      type: Number,
+      min: [-90, 'Latitude deve ser >= -90'],
+      max: [90, 'Latitude deve ser <= 90']
+    },
+    longitude: {
+      type: Number,
+      min: [-180, 'Longitude deve ser >= -180'],
+      max: [180, 'Longitude deve ser <= 180']
+    }
   },
   // Controle
   dataCriacao: {
@@ -126,7 +118,8 @@ const ParticipanteSchema = new mongoose.Schema({
   },
   ativo: {
     type: Boolean,
-    default: true
+    default: true,
+    index: true // adicionado índice para acelerar consultas filtrando por 'ativo'
   }
 });
 
@@ -136,7 +129,9 @@ ParticipanteSchema.pre('save', function(next) {
   next();
 });
 
-// Exclusão lógica
+// Exclusão lógica: marca o participante como inativo para preservar histórico e manter referências em outros registros.
+// Em situações que demandem a exclusão física, recomenda-se implementar uma função separada (com os devidos cuidados, como remoção em cascata e backup dos dados) 
+// para garantir a integridade dos dados.
 ParticipanteSchema.methods.excluirLogicamente = async function() {
   this.ativo = false;
   await this.save();

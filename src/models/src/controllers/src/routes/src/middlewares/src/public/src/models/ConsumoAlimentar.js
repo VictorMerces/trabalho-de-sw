@@ -4,7 +4,8 @@ const ConsumoAlimentarSchema = new mongoose.Schema({
   participanteId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Participante',
-    required: true
+    required: true,
+    index: true // índice para busca por participante
   },
   dispositivoRefeicao: {
     type: String,
@@ -49,11 +50,13 @@ const ConsumoAlimentarSchema = new mongoose.Schema({
   },
   dataPreenchimento: {
     type: Date,
-    default: Date.now
+    default: Date.now,
+    index: true // índice para filtragem e ordenação por data
   },
   rascunho: {
     type: Boolean,
-    default: true
+    default: true,
+    index: true // índice para busca rápida de rascunhos
   }
 });
 

@@ -9,6 +9,7 @@ exports.login = async (req, res) => {
     }
     res.json({ message: 'Login realizado com sucesso', participanteId: participante._id });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // Não revelar detalhes internos
+    res.status(500).json({ error: 'Erro interno' });
   }
 };

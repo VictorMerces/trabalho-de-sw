@@ -124,9 +124,7 @@
       const respostas = [];
       for (let i = 1; i <= 8; i++) {
         const resposta = document.querySelector(`input[name="pergunta${i}"]:checked`);
-        if (resposta) {
-          respostas.push(resposta.value);
-        }
+        respostas.push(resposta ? resposta.value : null);
       }
       
       // Calcular pontuação

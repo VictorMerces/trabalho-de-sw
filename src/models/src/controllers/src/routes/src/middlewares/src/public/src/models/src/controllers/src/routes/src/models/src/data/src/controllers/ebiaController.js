@@ -56,7 +56,9 @@ export default {
   async obterRelatorio(req, res) {
     try {
       const { id } = req.params;
-      const questionario = await QuestionarioEBIA.findById(id);
+      const questionario = await QuestionarioEBIA.findById(id)
+        .populate('participanteId', 'nome email idade') // popula dados essenciais do participante
+        .lean();
       
       if (!questionario) {
         return res.status(404).json({

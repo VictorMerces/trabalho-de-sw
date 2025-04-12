@@ -18,23 +18,48 @@
     .spinner { border:4px solid rgba(0,0,0,0.1); width:36px; height:36px; border-radius:50%; border-left-color:#09f; animation:spin 1s linear infinite; margin:0 auto; }
     @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
     #mensagem { margin-top:20px; padding:10px; border-radius:4px; }
+    /* Novo estilo para o erro de e-mail */
+    #emailError { color: red; font-size: 0.9em; margin-top:5px; }
+    /* Alto contraste */
+    body.alto-contraste { background: #000; color: #FFF; }
+    body.alto-contraste a { color: #FFD700; }
+    /* Botão de alto contraste */
+    .btn-contraste { position: fixed; top: 10px; right: 10px; background: #444; color: #fff; padding: 8px 12px; border: none; cursor: pointer; }
   </style>
+  <script src="https://browser.sentry-cdn.com/7.x.x/bundle.min.js" integrity="sha384-PLACEHOLDER" crossorigin="anonymous"></script>
+  <script>
+    Sentry.init({ dsn: 'YOUR_SENTRY_DSN' }); // substitua pelo seu DSN real
+  </script>
 </head>
 <body>
+  <!-- Skip link -->
+  <a href="#principal" class="skip-link" tabindex="1">Pular para o conteúdo</a>
+  <!-- Botão para alto contraste -->
+  <button class="btn-contraste" id="btnContraste" tabindex="2">Alto Contraste</button>
   <h1>Login</h1>
-  <form id="formLogin">
-    <div class="form-group">
-      <label for="email">E-mail*</label>
-      <input type="email" id="email" required>
-    </div>
-    <div class="form-group">
-      <label for="senha">Senha*</label>
-      <input type="password" id="senha" required>
-    </div>
-    <button type="submit">Entrar</button>
-  </form>
-  <p style="text-align:center; margin-top:15px;">
-    Não tem cadastro? <a href="/cadastro.html">Cadastre-se</a>
+  <main id="principal" role="main">
+    <form id="formLogin" tabindex="3">
+      <div class="form-group">
+        <label for="email">E-mail*</label>
+        <input type="email" id="email" required tabindex="4">
+        <!-- Área para validação em tempo real -->
+        <div id="emailError"></div>
+      </div>
+      <div class="form-group">
+        <label for="senha">Senha*</label>
+        <input type="password" id="senha" required tabindex="5">
+      </div>
+      <!-- Novo: Checkbox para lembrar senha -->
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="lembrarSenha" tabindex="6"> Lembrar senha
+        </label>
+      </div>
+      <button type="submit" tabindex="7">Entrar</button>
+    </form>
+  </main>
+  <p style="text-align:center; margin-top:15px;" tabindex="8">
+    Não tem cadastro? <a href="/cadastro.html" tabindex="9">Cadastre-se</a>
   </p>
   <div class="loading" id="loading">
     <div class="spinner"></div>
@@ -42,11 +67,35 @@
   </div>
   <div id="mensagem"></div>
   <script>
+    // Alto contraste toggle
+    document.getElementById('btnContraste').addEventListener('click', () => {
+      document.body.classList.toggle('alto-contraste');
+      const btn = document.getElementById('btnContraste');
+      btn.textContent = document.body.classList.contains('alto-contraste')
+        ? 'Contraste Normal'
+        : 'Alto Contraste';
+    });
+    
+    // Validação em tempo real do e-mail
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    
+    emailInput.addEventListener('input', () => {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regex.test(emailInput.value)) {
+        emailError.textContent = 'Por favor, insira um e-mail válido.';
+      } else {
+        emailError.textContent = '';
+      }
+    });
+    
     document.getElementById('formLogin').addEventListener('submit', async function(e) {
       e.preventDefault();
       const loginData = {
-        email: document.getElementById('email').value,
-        senha: document.getElementById('senha').value
+        email: emailInput.value,
+        senha: document.getElementById('senha').value,
+        // Enviar a opção de lembrar senha se marcada
+        lembrarSenha: document.getElementById('lembrarSenha').checked
       };
       try {
         document.getElementById('loading').style.display = 'block';
