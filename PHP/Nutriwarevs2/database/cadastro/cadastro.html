@@ -1,0 +1,189 @@
+<?php
+ session_start();
+ if (!isset($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+ }
+ ?>
+ <!DOCTYPE html>
+ <html lang="pt-br">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <title>Cadastro de Participante</title>
+ </head>
+ <body class="container">
+  <h1>Cadastro de Participante</h1>
+  <form action="cadastro.php" method="POST" novalidate>
+  <div class="form-group">
+  <label for="nome">Nome:</label>
+  <input type="text" id="nome" name="nome" required class="form-control">
+  </div>
+ 
+
+  <div class="form-group">
+  <label for="idade">Idade:</label>
+  <input type="number" id="idade" name="idade" class="form-control">
+  </div>
+ 
+
+  <div class="form-group">
+  <label for="genero">Gênero:</label>
+  <select id="genero" name="genero" class="form-control">
+  <option value="Masculino">Masculino</option>
+  <option value="Feminino">Feminino</option>
+  <option value="Transgênero">Transgênero</option>
+  <option value="NaoBinario">Não Binário</option>
+  </select>
+  </div>
+ 
+
+  <div class="form-group">
+  <label>Raça/cor:</label><br>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="raca_branco" name="raca_cor" value="Branco">
+  <label class="form-check-label" for="raca_branco">Branco</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="raca_preto" name="raca_cor" value="Preto">
+  <label class="form-check-label" for="raca_preto">Preto</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="raca_pardo" name="raca_cor" value="Pardo">
+  <label class="form-check-label" for="raca_pardo">Pardo</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="raca_originario" name="raca_cor" value="Povos originários">
+  <label class="form-check-label" for="raca_originario">Povos originários</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="raca_outro_check_raca" name="raca_cor" value="Outro">
+  <label class="form-check-label" for="raca_outro_check_raca">Outro:</label>
+  <input type="text" id="raca_outro" name="raca_outro" class="form-control mt-1">
+  </div>
+  </div>
+ 
+
+  <div class="form-group">
+  <label>Escolaridade:</label><br>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_incompleto_medio" name="escolaridade" value="Ensino médio incompleto">
+  <label class="form-check-label" for="escolaridade_incompleto_medio">Ensino médio incompleto</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_completo_medio" name="escolaridade" value="Ensino médio completo">
+  <label class="form-check-label" for="escolaridade_completo_medio">Ensino médio completo</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_incompleto_graduacao" name="escolaridade" value="Graduação incompleta">
+  <label class="form-check-label" for="escolaridade_incompleto_graduacao">Graduação incompleta</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_completo_graduacao" name="escolaridade" value="Graduação completa">
+  <label class="form-check-label" for="escolaridade_completo_graduacao">Graduação completa</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_incompleto_fundamental" name="escolaridade" value="Ensino fundamental incompleto">
+  <label class="form-check-label" for="escolaridade_incompleto_fundamental">Ensino fundamental incompleto</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_completo_fundamental" name="escolaridade" value="Ensino fundamental completo">
+  <label class="form-check-label" for="escolaridade_completo_fundamental">Ensino fundamental completo</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_prefere_nao_dizer" name="escolaridade" value="Prefere não dizer">
+  <label class="form-check-label" for="escolaridade_prefere_nao_dizer">Prefere não dizer</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="escolaridade_outro_check" name="escolaridade" value="Outro">
+  <label class="form-check-label" for="escolaridade_outro_check">Outro:</label>
+  <input type="text" id="escolaridade_outro" name="escolaridade_outro" class="form-control mt-1">
+  </div>
+  </div>
+ 
+
+  <div class="form-group">
+  <label>Emprego:</label><br>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="emprego_meio_periodo" name="emprego" value="Meio período">
+  <label class="form-check-label" for="emprego_meio_periodo">Meio período</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="emprego_desempregado" name="emprego" value="Desempregado">
+  <label class="form-check-label" for="emprego_desempregado">Desempregado</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="emprego_incapaz" name="emprego" value="Incapaz de trabalhar">
+  <label class="form-check-label" for="emprego_incapaz">Incapaz de trabalhar</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="emprego_aposentado" name="emprego" value="Aposentado">
+  <label class="form-check-label" for="emprego_aposentado">Aposentado</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="emprego_prefere_nao_dizer_emprego" name="emprego" value="Prefere não dizer">
+  <label class="form-check-label" for="emprego_prefere_nao_dizer_emprego">Prefere não dizer</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="emprego_outro_check" name="emprego" value="Outro">
+  <label class="form-check-label" for="emprego_outro_check">Outro:</label>
+  <input type="text" id="emprego_outro" name="emprego_outro" class="form-control mt-1">
+  </div>
+  </div>
+ 
+
+  <div class="form-group">
+  <label>Religião:</label><br>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_catolica" name="religiao" value="Católico">
+  <label class="form-check-label" for="religiao_catolica">Católico</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_evangelica" name="religiao" value="Evangélico">
+  <label class="form-check-label" for="religiao_evangelica">Evangélico</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_candomble" name="religiao" value="Candomblé">
+  <label class="form-check-label" for="religiao_candomble">Candomblé</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_umbanda" name="religiao" value="Umbanda">
+  <label class="form-check-label" for="religiao_umbanda">Umbanda</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_espirita" name="religiao" value="Espírita">
+  <label class="form-check-label" for="religiao_espirita">Espírita</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_nenhum" name="religiao" value="Nenhum">
+  <label class="form-check-label" for="religiao_nenhum">Nenhum</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_prefere_nao_dizer_religiao" name="religiao" value="Prefere não dizer">
+  <label class="form-check-label" for="religiao_prefere_nao_dizer_religiao">Prefere não dizer</label>
+  </div>
+  <div class="form-check">
+  <input class="form-check-input" type="radio" id="religiao_outro_check" name="religiao" value="Outro">
+  <label class="form-check-label" for="religiao_outro_check">Outro:</label>
+  <input type="text" id="religiao_outro" name="religiao_outro" class="form-control mt-1">
+  </div>
+  </div>
+ 
+
+  <div class="form-group">
+  <label for="email">E-mail:</label>
+  <input type="email" id="email" name="email" required class="form-control">
+  </div>
+ 
+
+  <div class="form-group">
+  <label for="senha">Senha:</label>
+  <input type="password" id="senha" name="senha" required class="form-control">
+  </div>
+ 
+
+  <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+  <input type="submit" value="Cadastrar" class="btn btn-primary">
+  </form>
+ </body>
+ </html>
