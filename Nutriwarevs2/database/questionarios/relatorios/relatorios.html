@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerar Relatórios - Nutriware</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Estilos adicionais se necessário */
+    .chart-container {
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body class="container mt-4">
+<h1 class="mb-4">Gerar Relatórios Nutriware</h1>
+
+<form action="relatorio_perfil_participante.php" method="POST" class="mb-4" id="report-form">
+  <div class="card mb-4">
+    <div class="card-header">
+      Configurações do Relatório
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="tipo_relatorio">1. Tipo de Relatório:</label>
+            <select id="tipo_relatorio" name="tipo_relatorio" class="form-control" required>
+              <option value="perfil">Perfil dos Participantes</option>
+              <option value="inseguranca">Insegurança Alimentar (EBIA)</option>
+              <option value="consumo">Consumo Alimentar</option>
+              <option value="completo">Relatório Completo (Todos os Dados)</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>2. Modo de Relatório:</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="modo_relatorio" id="modo_filtrado" value="filtrado" checked>
+              <label class="form-check-label" for="modo_filtrado">
+                Filtrado (Aplicar filtros abaixo)
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="modo_relatorio" id="modo_geral" value="geral">
+              <label class="form-check-label" for="modo_geral">
+                Geral (Ignorar filtros)
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      Filtros (Serão ignorados se o modo 'Geral' for selecionado)
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="idade_min">Idade Mínima:</label>
+            <input type="number" id="idade_min" name="idade_min" class="form-control" min="0" placeholder="Ex: 18">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="idade_max">Idade Máxima:</label>
+            <input type="number" id="idade_max" name="idade_max" class="form-control" min="0" placeholder="Ex: 60">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="genero">Gênero:</label>
+            <select id="genero" name="genero" class="form-control">
+              <option value="">Todos</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Feminino">Feminino</option>
+              <option value="Transgênero">Transgênero</option>
+              <option value="NaoBinario">Não Binário</option>
+              <option value="outro">Outro</option>
+              <option value="prefere_nao_dizer">Prefere não dizer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="raca">Raça/Cor:</label>
+            <select id="raca" name="raca" class="form-control">
+              <option value="">Todas</option>
+              <option value="branco">Branco</option>
+              <option value="preto">Preto</option>
+              <option value="pardo">Pardo</option>
+              <option value="povos_originarios">Povos originários</option>
+              <option value="outro">Outro</option>
+              <option value="prefere_nao_dizer">Prefere não dizer</option>
+            </select>
+            <small class="form-text text-muted">Filtra pelo valor base.</small>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="escolaridade">Escolaridade:</label>
+            <select id="escolaridade" name="escolaridade" class="form-control">
+              <option value="">Todas</option>
+              <option value="ensino_fundamental_incompleto">Ensino fundamental incompleto</option>
+              <option value="ensino_fundamental_completo">Ensino fundamental completo</option>
+              <option value="ensino_medio_incompleto">Ensino médio incompleto</option>
+              <option value="ensino_medio_completo">Ensino médio completo</option>
+              <option value="graduacao_incompleta">Graduação incompleta</option>
+              <option value="graduacao_completa">Graduação completa</option>
+              <option value="outro">Outro</option>
+              <option value="prefere_nao_dizer">Prefere não dizer</option>
+            </select>
+            <small class="form-text text-muted">Filtra pelo valor base.</small>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="situacao_emprego">Situação de Trabalho:</label>
+            <select id="situacao_emprego" name="situacao_emprego" class="form-control">
+              <option value="">Todas</option>
+              <option value="meio_periodo">Meio período</option>
+              <option value="tempo_integral">Tempo integral</option>
+              <option value="autonomo">Autônomo</option>
+              <option value="desempregado">Desempregado</option>
+              <option value="incapaz_trabalhar">Incapaz de trabalhar</option>
+              <option value="aposentado">Aposentado</option>
+              <option value="estudante">Estudante</option>
+              <option value="outro">Outro</option>
+              <option value="prefere_nao_dizer">Prefere não dizer</option>
+            </select>
+            <small class="form-text text-muted">Filtra pelo valor base.</small>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="estado_civil">Estado Civil:</label>
+            <select id="estado_civil" name="estado_civil" class="form-control">
+              <option value="">Todos</option>
+              <option value="solteiro">Solteiro(a)</option>
+              <option value="casado">Casado(a)</option>
+              <option value="divorciado">Divorciado(a)</option>
+              <option value="viuvo">Viúvo(a)</option>
+              <option value="separado">Separado(a)</option>
+              <option value="uniao_estavel">União Estável</option>
+              <option value="prefere_nao_dizer">Prefere não dizer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="religiao">Religião:</label>
+            <select id="religiao" name="religiao" class="form-control">
+              <option value="">Todas</option>
+              <option value="catolico">Católico</option>
+              <option value="evangelico">Evangélico</option>
+              <option value="espirita">Espírita</option>
+              <option value="umbanda">Umbanda</option>
+              <option value="candomble">Candomblé</option>
+              <option value="ateu">Ateu</option>
+              <option value="nenhum">Nenhuma</option>
+              <option value="outro">Outro</option>
+              <option value="prefere_nao_dizer">Prefere não dizer</option>
+            </select>
+            <small class="form-text text-muted">Filtra pelo valor base.</small>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-3">Gerar Relatório na Tela</button>
+  <button type="submit" name="exportar" value="csv" class="btn btn-secondary mt-3">Exportar para CSV</button>
+</form>
+
+<div id="report-results" class="mt-5">
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const reportForm = document.getElementById('report-form');
+    const reportTypeSelect = document.getElementById('tipo_relatorio');
+
+    if (reportForm && reportTypeSelect) {
+      reportForm.addEventListener('submit', function(event) {
+        const selectedType = reportTypeSelect.value;
+        let targetAction = 'relatorio_perfil_participante.php'; // Default action
+
+        // Define o arquivo PHP de destino baseado no tipo selecionado
+        switch (selectedType) {
+          case 'perfil':
+            targetAction = 'relatorio_perfil_participante.php';
+            break;
+          case 'inseguranca':
+             // O script de perfil já trata insegurança com base no 'tipo_relatorio' enviado
+            targetAction = 'relatorio_ebia.php';
+            break;
+          case 'consumo':
+            targetAction = 'relatorio_consumo_alimentar.php'; // <--- CORREÇÃO AQUI
+            break;
+          case 'completo':
+            // O script de perfil já trata o completo com base no 'tipo_relatorio' enviado
+            targetAction = 'relatorio_perfil_participante.php';
+            break;
+          default:
+             // Mantém o default se algo inesperado for selecionado
+             targetAction = 'relatorio_perfil_participante.php';
+        }
+
+        // Atualiza o atributo 'action' do formulário ANTES de enviar
+        reportForm.action = targetAction;
+
+        // O formulário continuará o envio normalmente após este script
+      });
+    }
+
+    // Script para desabilitar/habilitar filtros (SEU CÓDIGO ORIGINAL)
+    const modoRadios = document.querySelectorAll('input[name="modo_relatorio"]');
+    const filterCardBody = document.querySelector('.card-body .row'); // Seleciona a área dos filtros
+
+    function toggleFilters() {
+      const modoGeral = document.getElementById('modo_geral').checked;
+      const filterInputs = filterCardBody.querySelectorAll('input, select');
+      filterInputs.forEach(input => {
+        input.disabled = modoGeral;
+      });
+    }
+
+    modoRadios.forEach(radio => radio.addEventListener('change', toggleFilters));
+    toggleFilters(); // Chama no início
+  });
+</script>
+</body>
+</html>
