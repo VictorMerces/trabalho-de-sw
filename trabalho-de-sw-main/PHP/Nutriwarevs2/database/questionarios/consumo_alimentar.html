@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questionário de Consumo Alimentar</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="consumocss.css" />
+</head>
+<body>
+  <div class="container-formulario">
+    <form action="consumo_alimentar.php" method="POST">
+      <a href="/PHP/Nutriwarevs2/index.html" class="btn btn-secondary mb-3">Voltar ao Menu</a>
+      <h1>Questionário de Consumo Alimentar</h1>
+
+    <div class="form-group">
+      <label>Quais refeições você faz ao longo do dia?</label>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="refeicoes[]" id="cafe_manha" value="Café da manhã"> <label class="form-check-label" for="cafe_manha">Café da manhã</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="refeicoes[]" id="lanche_manha" value="Lanche da manhã"> <label class="form-check-label" for="lanche_manha">Lanche da manhã</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="refeicoes[]" id="almoco" value="Almoço"> <label class="form-check-label" for="almoco">Almoço</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="refeicoes[]" id="lanche_tarde" value="Lanche da tarde"> <label class="form-check-label" for="lanche_tarde">Lanche da tarde</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="refeicoes[]" id="jantar" value="Jantar"> <label class="form-check-label" for="jantar">Jantar</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="refeicoes[]" id="ceia" value="Ceia/lanche da noite"> <label class="form-check-label" for="ceia">Ceia/lanche da noite</label></div>
+    </div>
+
+    <div class="form-group">
+      <label>Você tem costume de fazer as refeições mexendo no computador ou celular?</label>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="usa_dispositivos" id="usa_dispositivos_sim" value="1">
+        <label class="form-check-label" for="usa_dispositivos_sim">Sim</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="usa_dispositivos" id="usa_dispositivos_nao" value="0">
+        <label class="form-check-label" for="usa_dispositivos_nao">Não</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Ontem, você consumiu:</label>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="feijao" id="feijao" value="1"> <label class="form-check-label" for="feijao">Feijão</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="frutas_frescas" id="frutas_frescas" value="1"> <label class="form-check-label" for="frutas_frescas">Frutas frescas (não considerar suco)</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="verduras_legumes" id="verduras_legumes" value="1"> <label class="form-check-label" for="verduras_legumes">Verduras e/ou legumes</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="hamburguer_embutidos" id="hamburguer_embutidos" value="1"> <label class="form-check-label" for="hamburguer_embutidos">Hambúrguer e/ou embutidos</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="bebidas_adocadas" id="bebidas_adocadas" value="1"> <label class="form-check-label" for="bebidas_adocadas">Bebidas adoçadas</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="macarrao_instantaneo" id="macarrao_instantaneo" value="1"> <label class="form-check-label" for="macarrao_instantaneo">Macarrão instantâneo, salgadinhos</label></div>
+      <div class="form-check"><input class="form-check-input" type="checkbox" name="biscoitos_recheados" id="biscoitos_recheados" value="1"> <label class="form-check-label" for="biscoitos_recheados">Biscoitos recheados, doces</label></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar Questionário</button>
+  </form>
+  
+</body>
+</html>
