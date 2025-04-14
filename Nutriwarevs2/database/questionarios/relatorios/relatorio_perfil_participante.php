@@ -422,24 +422,23 @@ function preparar_dados_graficos(array $dadosRelatorio, array $colunasDisponivei
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relatório Nutriware</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .chart-container { position: relative; margin: auto; height: 40vh; width: 100%; max-width: 450px; margin-bottom: 40px; }
     .chart-container-bar-wide { position: relative; margin: auto; height: 45vh; width: 100%; max-width: 600px; margin-bottom: 40px; }
-     th, td { white-space: normal; word-wrap: break-word; font-size: 0.85rem; vertical-align: top; text-align: left; padding: 0.4rem;} /* Ajuste padding e alinhamento */
-     th { text-align: center; background-color: #e9ecef;} /* Centraliza cabeçalho e adiciona fundo */
-     .table-responsive { max-height: 70vh; overflow: auto; margin-top: 1rem; } /* Ajusta altura e adiciona margem */
-     .sticky-top { position: sticky; top: 0; z-index: 10; } /* Tira fundo para herdar do TH */
-     .table-bordered th, .table-bordered td { border: 1px solid #dee2e6; }
-     .table-hover tbody tr:hover { background-color: #f1f1f1; }
-     .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0,0,0,.03); }
-     .card-body ul { padding-left: 20px; margin-bottom: 0; } /* Remove margem inferior da lista */
-     .badge { font-size: 0.8em; } /* Tamanho do badge */
+     /* Estilos da Tabela mantidos do relatório completo para consistência */
+     #tabela-perfil th { background-color: #e9ecef; text-align: center; } /* ID correto */
+     #tabela-perfil td { font-size: 0.85rem; vertical-align: middle; text-align: left; padding: 0.4rem;} /* ID correto */
+     .table-responsive { margin-top: 1rem; }
+     /* Remover sticky-top do thead se DataTables gerenciar o cabeçalho */
+     .card-body ul { padding-left: 20px; margin-bottom: 0; }
+     .badge { font-size: 0.8em; }
      .badge.seguranca-alimentar { background-color: #28a745; color: white; }
      .badge.inseguranca-leve { background-color: #ffc107; color: #212529; }
      .badge.inseguranca-moderada { background-color: #fd7e14; color: white; }
      .badge.inseguranca-grave { background-color: #dc3545; color: white; }
-     h1, h2 { text-align: center; } /* Centraliza títulos */
+     h1, h2 { text-align: center; }
   </style>
 </head>
 <body class="container mt-4 mb-5">
@@ -480,8 +479,8 @@ function preparar_dados_graficos(array $dadosRelatorio, array $colunasDisponivei
 
       <h2 class="mt-5">Dados Detalhados</h2>
       <div class="table-responsive mb-4">
-        <table class="table table-bordered table-striped table-hover table-sm">
-          <thead class="sticky-top">
+        <table id="tabela-perfil" class="table table-bordered table-striped table-hover table-sm" style="width:100%">
+          <thead>
              <tr>
                  <?php // Cabeçalho dinâmico (lógica existente adaptada) ?>
                  <?php foreach ($colunasReais as $coluna): ?>
@@ -572,16 +571,32 @@ function preparar_dados_graficos(array $dadosRelatorio, array $colunasDisponivei
     <?php endif; // Fim do if (empty($relatorio)) ?>
   <?php endif; // Fim do if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($erro)) ?>
 
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <?php // FontAwesome (opcional para ícone CSV) ?>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
+  <script>
+    $(document).ready(function() {
+        try {
+            $('#tabela-perfil').DataTable({ // Seleciona a tabela pelo ID correto
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' // Tradução
+                },
+                responsive: true // Habilita responsividade
+                // Outras opções podem ser adicionadas aqui, se necessário
+            });
+        } catch(e) {
+            console.error("Erro ao inicializar DataTables:", e);
+        }
+    });
+  </script>
 
   <?php if (!empty($chartData)): ?>
   <script>
+    // Seu código JavaScript existente para renderizar os gráficos Chart.js permanece aqui...
     const chartDataJS = JSON.parse('<?php echo json_encode($chartData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK); ?>');
     const backgroundColors = ['rgba(54, 162, 235, 0.7)','rgba(255, 99, 132, 0.7)','rgba(75, 192, 192, 0.7)','rgba(255, 206, 86, 0.7)','rgba(153, 102, 255, 0.7)','rgba(255, 159, 64, 0.7)','rgba(199, 199, 199, 0.7)','rgba(83, 102, 255, 0.7)','rgba(100, 255, 100, 0.7)', 'rgba(210, 130, 190, 0.7)', '#69A8E6','#FFB1C1','#A6E8D8','#FFD6A5','#CBAACB','#FFFFB5']; // Mais cores
     const borderColors = backgroundColors.map(color => color.replace('0.7', '1'));

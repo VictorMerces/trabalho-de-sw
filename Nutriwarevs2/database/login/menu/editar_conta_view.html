@@ -1,382 +1,208 @@
+<?php // database/login/menu/menu.php (MODIFICADO)
+ session_start();
+ // Verifica se o PARTICIPANTE está logado
+ if (!isset($_SESSION['participante_id'])) {
+  header("Location: ../login.php"); // Redireciona para o login único
+  exit;
+ }
+
+ // Pega o nome do usuário da sessão
+ $nomeUsuario = $_SESSION['participante_nome'] ?? 'Participante';
+ $userId = $_SESSION['participante_id']; // Pega o ID para link de editar conta
+
+ // Define qual item do menu está ativo
+ $paginaAtiva = 'menu';
+
+ ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Participante</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Menu Principal - Nutriware</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        .form-group { margin-bottom: 1.5rem; }
-        .form-check { margin-bottom: 0.5rem; }
+        /* Estilos básicos para a Sidebar usando Bootstrap 4 (consistente com o original) */
+        .wrapper { display: flex; width: 100%; align-items: stretch; min-height: 100vh; }
+        #sidebar { min-width: 250px; max-width: 250px; background: #28a745; /* Verde Success */ color: #fff; transition: all 0.3s; }
+        #sidebar.active { margin-left: -250px; } /* Para toggle (opcional) */
+        #sidebar .sidebar-header { padding: 20px; background: #218838; /* Verde Success mais escuro */ text-align: center;}
+        #sidebar .sidebar-header h3 i { margin-right: 8px; }
+        #sidebar ul.components { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        #sidebar ul li a { padding: 10px 20px; font-size: 1.1em; display: block; color: rgba(255, 255, 255, 0.8); border-left: 3px solid transparent; text-decoration: none; transition: all 0.3s;}
+        #sidebar ul li a:hover { color: #fff; background: #218838; }
+        #sidebar ul li.active > a, a[aria-expanded="true"] { color: #fff; background: #218838; border-left-color: #90EE90; /* Verde Claro */ }
+        #sidebar ul li a i { margin-right: 10px; }
+        a[data-toggle="collapse"] { position: relative; }
+        .dropdown-toggle::after { display: block; position: absolute; top: 50%; right: 20px; transform: translateY(-50%); }
+        #sidebar .custom-dropdown-menu { font-size: 0.9em !important; padding-left: 30px !important; background: #218838; } /* Submenu */
+        .line { width: 90%; height: 1px; border-bottom: 1px dashed rgba(255,255,255,0.2); margin: 15px auto; }
+        #content { width: 100%; padding: 20px; transition: all 0.3s; background-color: #f8f9fa; /* Fundo cinza claro */ }
+        .navbar-top { margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .list-group-item-action:hover { background-color: #e9f5e9; } /* Hover verde claro */
+         .card-link-icon { font-size: 1.5rem; margin-right: 15px; color: #28a745; }
+         .card-link-text { font-size: 1.1rem; font-weight: 500;}
+         .card-link-arrow { color: #6c757d; }
+         .badge-admin { font-size: 0.7em; background-color: #17a2b8; color: white; } /* Badge Admin Info */
     </style>
 </head>
-<body class="container mt-4 mb-5">
+<body>
 
-    <h1 id="form-title">Editar Participante</h1>
-
-    <div id="message-area"></div>
-
-    <form action="update_conta.php" method="POST" id="edit-form" novalidate>
-        <input type="hidden" name="id" id="participante-id" value="">
-        <input type="hidden" name="csrf_token" id="csrf-token" value="">
-
-        <div class="form-group">
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" required class="form-control" value="">
+<div class="wrapper">
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-leaf"></i> Nutriware</h3>
         </div>
 
-        <div class="form-group">
-            <label for="idade">Idade:</label>
-            <input type="number" id="idade" name="idade" class="form-control" value="">
-        </div>
+        <ul class="list-unstyled components">
+            <li class="<?php echo ($paginaAtiva == 'menu') ? 'active' : ''; ?>">
+                <a href="menu.php">
+                    <i class="fas fa-home"></i> Menu Principal
+                </a>
+            </li>
+            <li>
+                <a href="#questionariosSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-clipboard-list"></i> Questionários
+                </a>
+                <ul class="collapse list-unstyled custom-dropdown-menu" id="questionariosSubmenu">
+                    <li> <a href="../../questionarios/ebia.html"><i class="fas fa-balance-scale-right"></i> EBIA</a> </li>
+                    <li> <a href="../../questionarios/consumo_alimentar.html"><i class="fas fa-utensils"></i> Consumo Alimentar</a> </li>
+                </ul>
+            </li>
+            <li>
+                <a href="../../questionarios/relatorios/relatorios.html">
+                    <i class="fas fa-chart-pie"></i> Relatórios
+                </a>
+            </li>
+            <div class="line"></div>
+            <li>
+                <a href="#gerenciarSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-cogs"></i> Gerenciar
+                </a>
+                <ul class="collapse list-unstyled custom-dropdown-menu" id="gerenciarSubmenu">
+                    <li>
+                        <a href="listar_contas.php">
+                            <i class="fas fa-users-cog"></i> Contas <span class="badge badge-admin ml-1">Admin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="editar_conta.php?id=<?php echo $userId; ?>">
+                            <i class="fas fa-user-edit"></i> Minha Conta
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="../lagout/logout.php">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-        <div class="form-group">
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required class="form-control" value="">
-        </div>
-
-        <div class="form-group">
-            <label for="genero">Gênero:</label>
-            <select id="genero" name="genero" class="form-control" required>
-                <option value="">Selecione...</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Feminino">Feminino</option>
-                <option value="Transgênero">Transgênero</option>
-                <option value="NaoBinario">Não Binário</option>
-                 </select>
-        </div>
-
-        <div class="form-group">
-            <label>Raça/cor:</label><br>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" id="raca_branco" name="raca_cor" value="Branco" required>
-                <label class="form-check-label" for="raca_branco">Branco</label>
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white rounded navbar-top">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-light d-md-none">
+                    <i class="fas fa-align-left"></i>
+                </button>
+                <div class="ml-auto">
+                    <span class="navbar-text">
+                         Olá, <strong><?php echo htmlspecialchars($nomeUsuario); ?></strong>!
+                    </span>
+                </div>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" id="raca_preto" name="raca_cor" value="Preto" required>
-                <label class="form-check-label" for="raca_preto">Preto</label>
+        </nav>
+        <div class="card border-success mb-4">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-home"></i> Menu Principal
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" id="raca_pardo" name="raca_cor" value="Pardo" required>
-                <label class="form-check-label" for="raca_pardo">Pardo</label>
-            </div>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="raca_povos_originarios" name="raca_cor" value="Povos originários" required>
-                 <label class="form-check-label" for="raca_povos_originarios">Povos originários</label>
-             </div>
-             <div class="form-check">
-                <input class="form-check-input" type="radio" id="raca_outro_check" name="raca_cor" value="Outro" required>
-                <label class="form-check-label" for="raca_outro_check">Outro:</label>
-                <input type="text" id="raca_outro" name="raca_outro" class="form-control mt-1" placeholder="Qual?" value="">
+            <div class="card-body">
+                <h4 class="card-title text-success">Bem-vindo(a) ao Nutriware!</h4>
+                <p class="card-text">Sua plataforma de acompanhamento nutricional e alimentar.</p>
+                <p>Utilize o menu lateral ou os links abaixo para navegar entre as funcionalidades disponíveis.</p>
             </div>
         </div>
 
-        <div class="form-group">
-             <label>Escolaridade:</label><br>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_ensino_medio_incompleto" name="escolaridade" value="Ensino médio incompleto" required>
-                 <label class="form-check-label" for="esc_ensino_medio_incompleto">Ensino médio incompleto</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_ensino_medio_completo" name="escolaridade" value="Ensino médio completo" required>
-                 <label class="form-check-label" for="esc_ensino_medio_completo">Ensino médio completo</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_graduacao_incompleta" name="escolaridade" value="Graduação incompleta" required>
-                 <label class="form-check-label" for="esc_graduacao_incompleta">Graduação incompleta</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_graduacao_completa" name="escolaridade" value="Graduação completa" required>
-                 <label class="form-check-label" for="esc_graduacao_completa">Graduação completa</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_ensino_fundamental_incompleto" name="escolaridade" value="Ensino fundamental incompleto" required>
-                 <label class="form-check-label" for="esc_ensino_fundamental_incompleto">Ensino fundamental incompleto</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_ensino_fundamental_completo" name="escolaridade" value="Ensino fundamental completo" required>
-                 <label class="form-check-label" for="esc_ensino_fundamental_completo">Ensino fundamental completo</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_prefere_nao_dizer" name="escolaridade" value="Prefere não dizer" required>
-                 <label class="form-check-label" for="esc_prefere_nao_dizer">Prefere não dizer</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="esc_outro_check" name="escolaridade" value="Outro" required>
-                 <label class="form-check-label" for="esc_outro_check">Outro:</label>
-                 <input type="text" id="escolaridade_outro" name="escolaridade_outro" class="form-control mt-1" placeholder="Qual?" value="">
-             </div>
-         </div>
-
-        <div class="form-group">
-             <label for="estado_civil">Estado Civil:</label>
-             <select id="estado_civil" name="estado_civil" class="form-control" required>
-                 <option value="">Selecione...</option>
-                 <option value="Solteiro">Solteiro(a)</option>
-                 <option value="Casado">Casado(a)</option>
-                 <option value="Divorciado">Divorciado(a)</option>
-                 <option value="Viuvo">Viúvo(a)</option>
-                 <option value="Separado">Separado(a)</option>
-                 <option value="Prefere não dizer">Prefere não dizer</option>
-             </select>
-         </div>
-
-        <div class="form-group">
-             <label>Situação de Emprego:</label><br>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="emp_meio_periodo" name="emprego" value="Meio período" required>
-                 <label class="form-check-label" for="emp_meio_periodo">Meio período</label>
-             </div>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="emp_desempregado" name="emprego" value="Desempregado" required>
-                 <label class="form-check-label" for="emp_desempregado">Desempregado</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="emp_incapaz_de_trabalhar" name="emprego" value="Incapaz de trabalhar" required>
-                 <label class="form-check-label" for="emp_incapaz_de_trabalhar">Incapaz de trabalhar</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="emp_aposentado" name="emprego" value="Aposentado" required>
-                 <label class="form-check-label" for="emp_aposentado">Aposentado</label>
-             </div>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="emp_prefere_nao_dizer" name="emprego" value="Prefere não dizer" required>
-                 <label class="form-check-label" for="emp_prefere_nao_dizer">Prefere não dizer</label>
-             </div>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="emp_outro_check" name="emprego" value="Outro" required>
-                 <label class="form-check-label" for="emp_outro_check">Outro:</label>
-                 <input type="text" id="emprego_outro" name="emprego_outro" class="form-control mt-1" placeholder="Qual?" value="">
-             </div>
-         </div>
-
-         <div class="form-group">
-             <label>Benefícios Sociais (Auxílios):</label><br>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="aux_bolsa_familia" name="auxilios" value="Bolsa Família">
-                 <label class="form-check-label" for="aux_bolsa_familia">Bolsa Família</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="aux_auxilio_gas" name="auxilios" value="Auxílio Gás">
-                 <label class="form-check-label" for="aux_auxilio_gas">Auxílio Gás</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="aux_bpc" name="auxilios" value="BPC">
-                 <label class="form-check-label" for="aux_bpc">BPC</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="aux_nenhum" name="auxilios" value="Nenhum">
-                 <label class="form-check-label" for="aux_nenhum">Nenhum</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="aux_outros_check" name="auxilios" value="Outros">
-                 <label class="form-check-label" for="aux_outros_check">Outros:</label>
-                 <input type="text" id="auxilios_outros" name="auxilios_outros" class="form-control mt-1" placeholder="Quais?" value="">
-             </div>
-         </div>
-
-        <div class="form-group">
-             <label>Número de Dependentes:</label><br>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="dep_nenhum" name="dependentes" value="Nenhum" required>
-                 <label class="form-check-label" for="dep_nenhum">Nenhum</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="dep_1" name="dependentes" value="1" required>
-                 <label class="form-check-label" for="dep_1">1</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="dep_2" name="dependentes" value="2" required>
-                 <label class="form-check-label" for="dep_2">2</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="dep_3" name="dependentes" value="3" required>
-                 <label class="form-check-label" for="dep_3">3</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="dep_4_ou_mais" name="dependentes" value="4 ou mais" required>
-                 <label class="form-check-label" for="dep_4_ou_mais">4 ou mais</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="dep_outro_check" name="dependentes" value="Outro" required>
-                 <label class="form-check-label" for="dep_outro_check">Outro:</label>
-                 <input type="text" id="dependentes_outro" name="dependentes_outro" class="form-control mt-1" placeholder="Quantos/Quais?" value="">
-             </div>
-         </div>
-
-        <div class="form-group">
-             <label>Religião:</label><br>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_catolico" name="religiao" value="Católico" required>
-                 <label class="form-check-label" for="rel_catolico">Católico</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_evangelico" name="religiao" value="Evangélico" required>
-                 <label class="form-check-label" for="rel_evangelico">Evangélico</label>
-             </div>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_candomble" name="religiao" value="Candomblé" required>
-                 <label class="form-check-label" for="rel_candomble">Candomblé</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_umbanda" name="religiao" value="Umbanda" required>
-                 <label class="form-check-label" for="rel_umbanda">Umbanda</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_espirita" name="religiao" value="Espírita" required>
-                 <label class="form-check-label" for="rel_espirita">Espírita</label>
-             </div>
-              <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_nenhum" name="religiao" value="Nenhum" required>
-                 <label class="form-check-label" for="rel_nenhum">Nenhum</label>
-             </div>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_prefere_nao_dizer" name="religiao" value="Prefere não dizer" required>
-                 <label class="form-check-label" for="rel_prefere_nao_dizer">Prefere não dizer</label>
-             </div>
-             <div class="form-check">
-                 <input class="form-check-input" type="radio" id="rel_outro_check" name="religiao" value="Outro" required>
-                 <label class="form-check-label" for="rel_outro_check">Outro:</label>
-                 <input type="text" id="religiao_outro" name="religiao_outro" class="form-control mt-1" placeholder="Qual?" value="">
-             </div>
-         </div>
-
-        <hr>
-
-        <div class="form-group">
-            <label for="senha">Nova Senha (opcional):</label>
-            <input type="password" id="senha" name="senha" class="form-control" placeholder="Deixe em branco para não alterar">
-            <small class="form-text text-muted">Se preencher, a senha atual será substituída.</small>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success"><i class="fas fa-tasks mr-2"></i>Ações Rápidas</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="../../questionarios/ebia.html" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-balance-scale-right card-link-icon text-success"></i>
+                                    <span class="card-link-text">Responder Questionário EBIA</span>
+                                </div>
+                                <i class="fas fa-chevron-right card-link-arrow"></i>
+                            </a>
+                            <a href="../../questionarios/consumo_alimentar.html" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-utensils card-link-icon text-success"></i>
+                                    <span class="card-link-text">Responder Consumo Alimentar</span>
+                                </div>
+                                <i class="fas fa-chevron-right card-link-arrow"></i>
+                            </a>
+                            <a href="../../questionarios/relatorios/relatorios.html" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-chart-pie card-link-icon text-info"></i>
+                                    <span class="card-link-text">Visualizar Relatórios</span>
+                                </div>
+                                <i class="fas fa-chevron-right card-link-arrow"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success"><i class="fas fa-cog mr-2"></i>Gerenciamento</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="editar_conta.php?id=<?php echo $userId; ?>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-user-edit card-link-icon text-warning"></i>
+                                    <span class="card-link-text">Editar Minha Conta</span>
+                                </div>
+                                <i class="fas fa-chevron-right card-link-arrow"></i>
+                            </a>
+                            <a href="listar_contas.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-users-cog card-link-icon text-info"></i>
+                                    <span class="card-link-text">Gerenciar Contas</span>
+                                    <span class="badge badge-admin ml-1">Admin</span>
+                                </div>
+                                <i class="fas fa-chevron-right card-link-arrow"></i>
+                            </a>
+                        </div>
+                        <hr>
+                        <a href="../lagout/logout.php" class="btn btn-outline-danger btn-sm float-right">
+                            <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="senha_confirm">Confirmar Nova Senha:</label>
-            <input type="password" id="senha_confirm" name="senha_confirm" class="form-control" placeholder="Repita a nova senha, se alterou">
-        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 
-        <button type="submit" class="btn btn-primary">Atualizar Dados</button>
-        <a href="../menu/menu.html" class="btn btn-secondary">Cancelar</a>
-    </form>
-
-    <script>
-      const viewData = JSON.parse('<?php echo json_encode($viewData ?? null); ?>');
-      // A variável 'viewData' agora contém 'participante', 'csrfToken', 'id', etc.
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verifica se os dados foram carregados corretamente
-            if (!viewData || !viewData.participante) {
-                console.error("Dados do participante não encontrados.");
-                // Opcional: exibir mensagem de erro na página
-                setMessage("Erro ao carregar dados do participante.", 'danger');
-                return;
-            }
-
-            const participante = viewData.participante;
-            const form = document.getElementById('edit-form');
-
-            // Preenche título
-            document.getElementById('form-title').textContent = `Editar Participante: ${escapeHTML(participante.nome || '')}`;
-
-            // Preenche campos ocultos
-            document.getElementById('participante-id').value = viewData.id || '';
-            document.getElementById('csrf-token').value = viewData.csrfToken || '';
-
-            // Preenche campos de texto/número/email
-            setValue('nome', participante.nome);
-            setValue('idade', participante.idade);
-            setValue('email', participante.email);
-
-            // Seleciona opções em 'select'
-            setValue('genero', participante.genero);
-            setValue('estado_civil', participante.estado_civil);
-
-            // Marca radio buttons e preenche campos 'outro'
-            setRadioAndOutro('raca_cor', 'raca_outro', viewData.raca_data);
-            setRadioAndOutro('escolaridade', 'escolaridade_outro', viewData.escolaridade_data);
-            setRadioAndOutro('emprego', 'emprego_outro', viewData.emprego_data); // 'emprego' é o name no form
-            setRadioAndOutro('auxilios', 'auxilios_outros', viewData.beneficios_data);
-            setRadioAndOutro('dependentes', 'dependentes_outro', viewData.dependentes_data);
-            setRadioAndOutro('religiao', 'religiao_outro', viewData.religiao_data);
-
-            // Exibe mensagens de sucesso/erro da sessão, se houver
-            if (viewData.update_error) {
-                setMessage(viewData.update_error, 'danger');
-            } else if (viewData.update_success) {
-                setMessage(viewData.update_success, 'success');
-            }
-
+<script>
+    // Script para toggle da sidebar (opcional)
+    /*
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
         });
-
-        // --- Funções auxiliares do JavaScript ---
-
-        // Define o valor de um campo input/select
-        function setValue(elementId, value) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.value = value !== null ? value : ''; // Trata valores nulos
-            } else {
-                console.warn(`Elemento não encontrado: ${elementId}`);
-            }
-        }
-
-        // Marca o radio button correto e preenche o campo 'outro' associado
-        function setRadioAndOutro(radioGroupName, outroInputId, data) {
-            if (!data) return;
-            const valorBase = data.base;
-            const outroTexto = data.outro;
-
-            // Encontra e marca o radio button correspondente
-            const radios = document.querySelectorAll(`input[type="radio"][name="${radioGroupName}"]`);
-            let found = false;
-            radios.forEach(radio => {
-                // Compara ignorando case para maior robustez
-                if (radio.value && valorBase && radio.value.toLowerCase() === valorBase.toLowerCase()) {
-                    radio.checked = true;
-                    found = true;
-                } else {
-                    radio.checked = false;
-                }
-            });
-             if (!found) {
-                console.warn(`Nenhum radio button encontrado para o grupo ${radioGroupName} com valor ${valorBase}`);
-            }
-
-
-            // Preenche o campo 'outro' se existir e se o valor base for 'Outro' (ou 'Outros')
-            const outroInput = document.getElementById(outroInputId);
-            if (outroInput) {
-                 // Verifica se o radio 'Outro' (ou 'Outros') está marcado
-                const outroRadio = document.querySelector(`input[type="radio"][name="${radioGroupName}"][value="${data.base}"]`);
-                if (outroRadio && outroRadio.checked) {
-                     outroInput.value = outroTexto || '';
-                } else {
-                    outroInput.value = ''; // Limpa se outro radio estiver marcado
-                }
-            }
-        }
-
-        // Exibe uma mensagem na área designada
-        function setMessage(message, type = 'info') {
-             const messageArea = document.getElementById('message-area');
-             if (messageArea && message) {
-                 // Usa innerHTML cuidadosamente aqui porque a msg de erro do PHP pode conter <br>
-                 messageArea.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-             }
-        }
-
-        // Função simples para escapar HTML e prevenir XSS básico ao inserir no título
-        function escapeHTML(str) {
-            if (!str) return '';
-            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-        }
-
-    </script>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
+    });
+    */
+    // Ativar tooltips (se usar)
+    // $(function () { $('[data-toggle="tooltip"]').tooltip() })
+</script>
 </body>
 </html>

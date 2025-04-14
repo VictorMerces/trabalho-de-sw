@@ -1,167 +1,147 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Questionário EBIA</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <style>
-    /* Estilos CSS (mantidos para possível uso futuro ou consistência) */
-    .seguranca-alimentar { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .inseguranca-leve { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-    .inseguranca-moderada { background-color: #FDC7A9; color: #815314; border: 1px solid #FFDAB9; }
-    .inseguranca-grave { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-    .resultado-box { padding: 15px; margin-top: 20px; border-radius: 5px; font-weight: bold; text-align: center; }
-    .required-label::after { content: " *"; color: red; }
-    .form-group { margin-bottom: 1.5rem; }
-    .form-check-label { margin-right: 15px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionário EBIA - Nutriware</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Copie os estilos da Sidebar e Content do menu.php ou use CSS externo */
+        .wrapper { display: flex; width: 100%; align-items: stretch; min-height: 100vh; }
+        #sidebar { min-width: 250px; max-width: 250px; background: #28a745; color: #fff; transition: all 0.3s; }
+        #sidebar .sidebar-header { padding: 20px; background: #218838; text-align: center; }
+        #sidebar ul.components { padding: 20px 0; }
+        #sidebar ul li a { padding: 10px 20px; font-size: 1.1em; display: block; color: rgba(255, 255, 255, 0.8); border-left: 3px solid transparent; }
+        #sidebar ul li a:hover { color: #fff; background: #218838; text-decoration: none; }
+        #sidebar ul li.active > a { color: #fff; background: #218838; border-left-color: #90EE90; }
+        #sidebar ul li a i { margin-right: 10px; }
+        #content { width: 100%; padding: 20px; transition: all 0.3s; background-color: #f8f9fa; }
+        .card-questionario { margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        .card-questionario .card-body { padding: 1.5rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-check-label { margin-right: 15px; font-weight: normal; }
+        label:not(.form-check-label) { font-weight: bold; color: #1E4620; } /* Label da pergunta */
+        .required-label::after { content: " *"; color: red; }
+        h2 i { margin-right: 10px; color: #28a745; }
+    </style>
 </head>
-<body class="container mt-4">
-
-  <h1>Escala Brasileira de Insegurança Alimentar (EBIA)</h1>
-  <p>Nos últimos três meses...</p>
-
-  <form id="ebiaForm" action="ebia.php" method="POST">
-
-    <div class="form-group">
-      <label class="required-label" for="p1">1. Os moradores deste domicílio tiveram a preocupação de que os alimentos acabassem antes de poderem comprar ou receber mais comida?</label><br>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p1" id="p1_sim" value="1" required>
-        <label class="form-check-label" for="p1_sim">Sim</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p1" id="p1_nao" value="0">
-        <label class="form-check-label" for="p1_nao">Não</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p1" id="p1_ns" value="0">
-        <label class="form-check-label" for="p1_ns">Não sabe/não respondeu</label>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="required-label" for="p2">2. Os alimentos acabaram antes que os moradores deste domicílio tivessem dinheiro para comprar mais comida?</label><br>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p2" id="p2_sim" value="1" required>
-        <label class="form-check-label" for="p2_sim">Sim</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p2" id="p2_nao" value="0">
-        <label class="form-check-label" for="p2_nao">Não</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p2" id="p2_ns" value="0">
-        <label class="form-check-label" for="p2_ns">Não sabe/não respondeu</label>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="required-label" for="p3">3. Os moradores deste domicílio ficaram sem dinheiro para ter uma alimentação saudável e variada?</label><br>
-       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p3" id="p3_sim" value="1" required>
-        <label class="form-check-label" for="p3_sim">Sim</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p3" id="p3_nao" value="0">
-        <label class="form-check-label" for="p3_nao">Não</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p3" id="p3_ns" value="0">
-        <label class="form-check-label" for="p3_ns">Não sabe/não respondeu</label>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="required-label" for="p4">4. Os moradores deste domicílio comeram apenas alguns poucos tipos de alimentos que ainda tinham, porque o dinheiro acabou?</label><br>
-       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p4" id="p4_sim" value="1" required>
-        <label class="form-check-label" for="p4_sim">Sim</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p4" id="p4_nao" value="0">
-        <label class="form-check-label" for="p4_nao">Não</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="p4" id="p4_ns" value="0">
-        <label class="form-check-label" for="p4_ns">Não sabe/não respondeu</label>
-      </div>
-    </div>
-
-    <div class="form-group">
-        <label class="required-label" for="p5">5. Algum/a morador/a de 18 anos ou mais de idade deixou de fazer alguma refeição, porque não havia dinheiro para comprar comida?</label><br>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p5" id="p5_sim" value="1" required>
-            <label class="form-check-label" for="p5_sim">Sim</label>
+<body>
+<div class="wrapper">
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-leaf"></i> Nutriware</h3>
         </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p5" id="p5_nao" value="0">
-            <label class="form-check-label" for="p5_nao">Não</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p5" id="p5_ns" value="0">
-            <label class="form-check-label" for="p5_ns">Não sabe/não respondeu</label>
-        </div>
-    </div>
+        <ul class="list-unstyled components">
+            <li><a href="../login/menu/menu.php"><i class="fas fa-home"></i> Menu Principal</a></li>
+            <li class="active"><a href="ebia.html"><i class="fas fa-clipboard-list"></i> Questionário EBIA</a></li>
+            <li><a href="consumo_alimentar.html"><i class="fas fa-utensils"></i> Consumo Alimentar</a></li>
+            <li><a href="relatorios/relatorios.html"><i class="fas fa-chart-pie"></i> Relatórios</a></li>
+            <div style="height: 1px; background-color: rgba(255,255,255,0.1); margin: 10px 20px;"></div>
+            <li><a href="../login/menu/listar_contas.php"><i class="fas fa-users-cog"></i> Gerenciar Contas <span class="badge badge-light ml-1">Admin</span></a></li>
+            <li><a href="../login/menu/editar_conta.php?id=<?php echo $_SESSION['participante_id'] ?? ''; /* Precisa do ID aqui */ ?>"><i class="fas fa-user-edit"></i> Minha Conta</a></li>
+            <li><a href="../login/lagout/logout.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+        </ul>
+    </nav>
 
-    <div class="form-group">
-        <label class="required-label" for="p6">6. Algum/a morador/a de 18 anos ou mais de idade, alguma vez, comeu menos do que achou que devia, porque não havia dinheiro para comprar comida?</label><br>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p6" id="p6_sim" value="1" required>
-            <label class="form-check-label" for="p6_sim">Sim</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p6" id="p6_nao" value="0">
-            <label class="form-check-label" for="p6_nao">Não</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p6" id="p6_ns" value="0">
-            <label class="form-check-label" for="p6_ns">Não sabe/não respondeu</label>
-        </div>
-    </div>
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container-fluid">
+                <span class="navbar-text">Questionário EBIA</span>
+            </div>
+        </nav>
 
-    <div class="form-group">
-        <label class="required-label" for="p7">7. Algum/a morador/a de 18 anos ou mais de idade, alguma vez, sentiu fome, mas não comeu, porque não havia dinheiro para comprar comida?</label><br>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p7" id="p7_sim" value="1" required>
-            <label class="form-check-label" for="p7_sim">Sim</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p7" id="p7_nao" value="0">
-            <label class="form-check-label" for="p7_nao">Não</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p7" id="p7_ns" value="0">
-            <label class="form-check-label" for="p7_ns">Não sabe/não respondeu</label>
+        <h2><i class="fas fa-clipboard-list"></i>Escala Brasileira de Insegurança Alimentar (EBIA)</h2>
+        <p class="text-muted">Responda às perguntas abaixo pensando nos últimos três meses.</p>
+
+        <div class="card card-questionario">
+            <div class="card-body">
+                <form id="ebiaForm" action="ebia.php" method="POST">
+
+                    <div class="form-group">
+                        <label class="required-label" for="p1">1. Os moradores deste domicílio tiveram a preocupação de que os alimentos acabassem antes de poderem comprar ou receber mais comida?</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="p1" id="p1_sim" value="1" required>
+                            <label class="form-check-label" for="p1_sim">Sim</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="p1" id="p1_nao" value="0">
+                            <label class="form-check-label" for="p1_nao">Não</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="p1" id="p1_ns" value="0"> <label class="form-check-label" for="p1_ns">Não sabe/não respondeu</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required-label" for="p2">2. Os alimentos acabaram antes que os moradores deste domicílio tivessem dinheiro para comprar mais comida?</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="p2" id="p2_sim" value="1" required>
+                            <label class="form-check-label" for="p2_sim">Sim</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="p2" id="p2_nao" value="0">
+                            <label class="form-check-label" for="p2_nao">Não</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="p2" id="p2_ns" value="0">
+                            <label class="form-check-label" for="p2_ns">Não sabe/não respondeu</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required-label" for="p3">3. Os moradores deste domicílio ficaram sem dinheiro para ter uma alimentação saudável e variada?</label><br>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p3" id="p3_sim" value="1" required><label class="form-check-label" for="p3_sim">Sim</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p3" id="p3_nao" value="0"><label class="form-check-label" for="p3_nao">Não</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p3" id="p3_ns" value="0"><label class="form-check-label" for="p3_ns">Não sabe/não respondeu</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-label" for="p4">4. Os moradores deste domicílio comeram apenas alguns poucos tipos de alimentos que ainda tinham, porque o dinheiro acabou?</label><br>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p4" id="p4_sim" value="1" required><label class="form-check-label" for="p4_sim">Sim</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p4" id="p4_nao" value="0"><label class="form-check-label" for="p4_nao">Não</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p4" id="p4_ns" value="0"><label class="form-check-label" for="p4_ns">Não sabe/não respondeu</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-label" for="p5">5. Algum/a morador/a de 18 anos ou mais de idade deixou de fazer alguma refeição, porque não havia dinheiro para comprar comida?</label><br>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p5" id="p5_sim" value="1" required><label class="form-check-label" for="p5_sim">Sim</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p5" id="p5_nao" value="0"><label class="form-check-label" for="p5_nao">Não</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p5" id="p5_ns" value="0"><label class="form-check-label" for="p5_ns">Não sabe/não respondeu</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-label" for="p6">6. Algum/a morador/a de 18 anos ou mais de idade, alguma vez, comeu menos do que achou que devia, porque não havia dinheiro para comprar comida?</label><br>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p6" id="p6_sim" value="1" required><label class="form-check-label" for="p6_sim">Sim</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p6" id="p6_nao" value="0"><label class="form-check-label" for="p6_nao">Não</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p6" id="p6_ns" value="0"><label class="form-check-label" for="p6_ns">Não sabe/não respondeu</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-label" for="p7">7. Algum/a morador/a de 18 anos ou mais de idade, alguma vez, sentiu fome, mas não comeu, porque não havia dinheiro para comprar comida?</label><br>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p7" id="p7_sim" value="1" required><label class="form-check-label" for="p7_sim">Sim</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p7" id="p7_nao" value="0"><label class="form-check-label" for="p7_nao">Não</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p7" id="p7_ns" value="0"><label class="form-check-label" for="p7_ns">Não sabe/não respondeu</label></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-label" for="p8">8. Algum/a morador/a de 18 anos ou mais de idade, alguma vez, fez apenas uma refeição ao dia ou ficou um dia inteiro sem comer because não havia dinheiro para comprar comida?</label><br>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p8" id="p8_sim" value="1" required><label class="form-check-label" for="p8_sim">Sim</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p8" id="p8_nao" value="0"><label class="form-check-label" for="p8_nao">Não</label></div>
+                        <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="p8" id="p8_ns" value="0"><label class="form-check-label" for="p8_ns">Não sabe/não respondeu</label></div>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg mr-2">
+                            <i class="fas fa-paper-plane"></i> Enviar Respostas
+                        </button>
+                        <a href="../login/menu/menu.php" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Voltar ao Menu
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
-    <div class="form-group">
-        <label class="required-label" for="p8">8. Algum/a morador/a de 18 anos ou mais de idade, alguma vez, fez apenas uma refeição ao dia ou ficou um dia inteiro sem comer porque não havia dinheiro para comprar comida?</label><br>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p8" id="p8_sim" value="1" required>
-            <label class="form-check-label" for="p8_sim">Sim</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p8" id="p8_nao" value="0">
-            <label class="form-check-label" for="p8_nao">Não</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="p8" id="p8_ns" value="0">
-            <label class="form-check-label" for="p8_ns">Não sabe/não respondeu</label>
-        </div>
-    </div>
-
-
-    <button type="submit" class="btn btn-primary mb-3">Enviar Respostas</button>
-
-  </form>
-
-  <a href="../login/menu/menu.html" class="btn btn-secondary mt-3">Voltar ao Menu</a>
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 </body>
 </html>

@@ -228,6 +228,7 @@ if (empty($erro) && $totalRegistros > 0) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relatório de Consumo Alimentar - Nutriware</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
   <style>
     /* Estilos consistentes */
@@ -236,10 +237,10 @@ if (empty($erro) && $totalRegistros > 0) {
     h1, h2 { text-align: center; }
     .card { min-height: 500px; display: flex; flex-direction: column; }
     .card-body { flex-grow: 1; display: flex; align-items: center; justify-content: center; }
-    th, td { white-space: normal; word-wrap: break-word; font-size: 0.85rem; vertical-align: top; text-align: left; padding: 0.4rem; }
-    th { text-align: center; background-color: #e9ecef; } /* Cabeçalho da tabela */
-    .table-responsive { max-height: 70vh; overflow: auto; }
-    .sticky-top { position: sticky; top: 0; z-index: 10; } /* Sem background aqui para não sobrepor o TH */
+    #tabela-consumo th { background-color: #e9ecef; text-align: center; } /* ID correto */
+    #tabela-consumo td { font-size: 0.85rem; vertical-align: middle; text-align: left; padding: 0.4rem; } /* ID correto */
+    .table-responsive { margin-top: 1rem; }
+    /* Remover sticky-top se DataTables gerencia */
     .table-bordered th, .table-bordered td { border: 1px solid #dee2e6; }
     .table-hover tbody tr:hover { background-color: #f1f1f1; }
     .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0,0,0,.03); }
@@ -271,8 +272,8 @@ if (empty($erro) && $totalRegistros > 0) {
           <div class="alert alert-warning text-center">Nenhuma coluna de dados encontrada para exibir a tabela.</div>
       <?php else: ?>
           <div class="table-responsive mb-4">
-              <table class="table table-bordered table-striped table-hover table-sm">
-                  <thead class="sticky-top">
+              <table id="tabela-consumo" class="table table-bordered table-striped table-hover table-sm" style="width:100%">
+                  <thead>
                       <tr>
                           <?php
                               // Mapeamento para nomes de cabeçalho (REUTILIZADO ACIMA)
@@ -343,11 +344,26 @@ if (empty($erro) && $totalRegistros > 0) {
       </div>
   <?php endif; // Fim do if principal de exibição de conteúdo ?>
 
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+        try {
+            $('#tabela-consumo').DataTable({ // Seleciona a tabela pelo ID correto
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json' // Tradução
+                },
+                responsive: true // Habilita responsividade
+            });
+        } catch(e) {
+            console.error("Erro ao inicializar DataTables:", e);
+        }
+    });
+  </script>
 
   <?php // Script JavaScript para renderizar os gráficos (sem alterações) ?>
   <?php if (!empty($chartData)): ?>

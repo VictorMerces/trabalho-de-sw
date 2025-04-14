@@ -1,90 +1,136 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<!DOCTYPE html> <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Questionário de Consumo Alimentar</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Questionário de Consumo Alimentar - Nutriware</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* Estilos básicos da Sidebar (copiados do menu.php) */
+    .wrapper { display: flex; width: 100%; align-items: stretch; min-height: 100vh; }
+    #sidebar { min-width: 250px; max-width: 250px; background: #28a745; color: #fff; transition: all 0.3s; }
+    #sidebar .sidebar-header { padding: 20px; background: #218838; text-align: center; }
+    #sidebar .sidebar-header h3 i { margin-right: 8px; }
+    #sidebar ul.components { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    #sidebar ul li a { padding: 10px 20px; font-size: 1.1em; display: block; color: rgba(255, 255, 255, 0.8); border-left: 3px solid transparent; text-decoration: none; transition: all 0.3s; }
+    #sidebar ul li a:hover { color: #fff; background: #218838; }
+    #sidebar ul li.active > a, a[aria-expanded="true"] { color: #fff; background: #218838; border-left-color: #90EE90; }
+    #sidebar ul li a i { margin-right: 10px; }
+    a[data-toggle="collapse"] { position: relative; }
+    .dropdown-toggle::after { display: block; position: absolute; top: 50%; right: 20px; transform: translateY(-50%); }
+    #sidebar .custom-dropdown-menu { font-size: 0.9em !important; padding-left: 30px !important; background: #218838; }
+    .line { width: 90%; height: 1px; border-bottom: 1px dashed rgba(255,255,255,0.2); margin: 15px auto; }
+    #content { width: 100%; padding: 20px; transition: all 0.3s; background-color: #f8f9fa; }
+    .navbar-top { margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    /* Estilos do formulário */
+    .card-questionario { margin-bottom: 1.5rem; border: 1px solid #c3e6cb; /* Borda verde suave */ }
+    .card-questionario .card-header { background-color: #d4edda; color: #155724; font-weight: bold; } /* Cabeçalho verde claro */
+    .form-group { margin-bottom: 1.5rem; }
+    .form-check { margin-bottom: 0.5rem; }
+    .form-check-label { font-weight: normal; margin-left: 5px; }
+    label:not(.form-check-label) { font-weight: bold; color: #155724; } /* Labels das perguntas */
+    h2 i { margin-right: 10px; color: #28a745; }
+    .required-label::after { content: " *"; color: red; } /* Indicador de campo obrigatório */
+  </style>
 </head>
-<body class="container">
-<h1>Questionário de Consumo Alimentar</h1>
-<form action="consumo_alimentar.php" method="POST">
-  <div class="form-group">
-    <label>Quais refeições você faz ao longo do dia?</label><br>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="refeicoes[]" id="cafe_manha" value="Café da manhã">
-      <label class="form-check-label" for="cafe_manha">Café da manhã</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="refeicoes[]" id="lanche_manha" value="Lanche da manhã">
-      <label class="form-check-label" for="lanche_manha">Lanche da manhã</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="refeicoes[]" id="almoco" value="Almoço">
-      <label class="form-check-label" for="almoco">Almoço</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="refeicoes[]" id="lanche_tarde" value="Lanche da tarde">
-      <label class="form-check-label" for="lanche_tarde">Lanche da tarde</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="refeicoes[]" id="jantar" value="Jantar">
-      <label class="form-check-label" for="jantar">Jantar</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="refeicoes[]" id="ceia" value="Ceia/lanche da noite">
-      <label class="form-check-label" for="ceia">Ceia/lanche da noite</label>
-    </div>
+<body>
+<div class="wrapper">
+  <nav id="sidebar">
+    <div class="sidebar-header"> <h3><i class="fas fa-leaf"></i> Nutriware</h3> </div>
+    <ul class="list-unstyled components">
+      <li> <a href="../login/menu/menu.php"><i class="fas fa-home"></i> Menu Principal</a> </li>
+      <li class="active"> <a href="#questionariosSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle"><i class="fas fa-clipboard-list"></i> Questionários</a>
+        <ul class="collapse list-unstyled show custom-dropdown-menu" id="questionariosSubmenu"> <li><a href="ebia.html"><i class="fas fa-balance-scale-right"></i> EBIA</a></li>
+          <li class="active"><a href="consumo_alimentar.html"><i class="fas fa-utensils"></i> Consumo Alimentar</a></li> </ul>
+      </li>
+      <li> <a href="relatorios/relatorios.html"><i class="fas fa-chart-pie"></i> Relatórios</a> </li>
+      <div class="line"></div>
+      <li>
+        <a href="#gerenciarSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fas fa-cogs"></i> Gerenciar</a>
+        <ul class="collapse list-unstyled custom-dropdown-menu" id="gerenciarSubmenu">
+          <li><a href="../login/menu/listar_contas.php"><i class="fas fa-users-cog"></i> Contas <span class="badge badge-info ml-1">Admin</span></a></li>
+          <li><a href="../login/menu/editar_conta.php?id=<?php echo $_SESSION['participante_id'] ?? 0; /* Precisa do ID aqui */ ?>"><i class="fas fa-user-edit"></i> Minha Conta</a></li>
+        </ul>
+      </li>
+      <li> <a href="../login/lagout/logout.php"><i class="fas fa-sign-out-alt"></i> Sair</a> </li>
+    </ul>
+  </nav>
+
+  <div id="content">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white rounded navbar-top">
+      <div class="container-fluid">
+        <span class="navbar-text ml-auto"> Olá, <strong><?php echo htmlspecialchars($_SESSION['participante_nome'] ?? 'Participante'); ?></strong>! </span>
+      </div>
+    </nav>
+
+    <h2><i class="fas fa-utensils"></i> Questionário de Consumo Alimentar</h2>
+    <p class="text-muted">Responda às perguntas abaixo sobre seus hábitos alimentares recentes.</p>
+
+    <form action="consumo_alimentar.php" method="POST">
+      <div class="card card-questionario">
+        <div class="card-header">
+          <i class="fas fa-calendar-day mr-2"></i>Refeições do Dia
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Quais refeições você faz ao longo do dia?</label><br>
+            <small class="form-text text-muted mb-2">Marque todas as opções que se aplicam.</small>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="refeicoes[]" id="cafe_manha" value="Café da manhã"> <label class="form-check-label" for="cafe_manha">Café da manhã</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="refeicoes[]" id="lanche_manha" value="Lanche da manhã"> <label class="form-check-label" for="lanche_manha">Lanche da manhã</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="refeicoes[]" id="almoco" value="Almoço"> <label class="form-check-label" for="almoco">Almoço</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="refeicoes[]" id="lanche_tarde" value="Lanche da tarde"> <label class="form-check-label" for="lanche_tarde">Lanche da tarde</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="refeicoes[]" id="jantar" value="Jantar"> <label class="form-check-label" for="jantar">Jantar</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="refeicoes[]" id="ceia" value="Ceia/lanche da noite"> <label class="form-check-label" for="ceia">Ceia/lanche da noite</label> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-questionario">
+        <div class="card-header">
+          <i class="fas fa-mobile-alt mr-2"></i>Hábitos Durante as Refeições
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="required-label">Você tem costume de fazer as refeições mexendo no computador ou celular?</label><br>
+            <div class="form-check form-check-inline"> <input class="form-check-input" type="radio" name="usa_dispositivos" id="usa_dispositivos_sim" value="1" required> <label class="form-check-label" for="usa_dispositivos_sim">Sim</label> </div>
+            <div class="form-check form-check-inline"> <input class="form-check-input" type="radio" name="usa_dispositivos" id="usa_dispositivos_nao" value="0" required> <label class="form-check-label" for="usa_dispositivos_nao">Não</label> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-questionario">
+        <div class="card-header">
+          <i class="fas fa-drumstick-bite mr-2"></i>Consumo do Dia Anterior
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Ontem, você consumiu:</label><br>
+            <small class="form-text text-muted mb-2">Marque todas as opções que consumiu.</small>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="feijao" id="feijao" value="1"> <label class="form-check-label" for="feijao">Feijão</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="frutas_frescas" id="frutas_frescas" value="1"> <label class="form-check-label" for="frutas_frescas">Frutas frescas (não considerar suco)</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="verduras_legumes" id="verduras_legumes" value="1"> <label class="form-check-label" for="verduras_legumes">Verduras e/ou legumes (não incluir batata, mandioca, cará ou inhame)</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="hamburguer_embutidos" id="hamburguer_embutidos" value="1"> <label class="form-check-label" for="hamburguer_embutidos">Hambúrguer e/ou embutidos (presunto, mortadela, salame, linguiça, salsicha)</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="bebidas_adocadas" id="bebidas_adocadas" value="1"> <label class="form-check-label" for="bebidas_adocadas">Bebidas adoçadas (refrigerante, suco de caixa/lata, suco em pó, refresco)</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="macarrao_instantaneo" id="macarrao_instantaneo" value="1"> <label class="form-check-label" for="macarrao_instantaneo">Macarrão instantâneo, salgadinhos de pacote ou biscoitos salgados</label> </div>
+            <div class="form-check"> <input class="form-check-input" type="checkbox" name="biscoitos_recheados" id="biscoitos_recheados" value="1"> <label class="form-check-label" for="biscoitos_recheados">Biscoitos doces, recheados, sobremesas ou outras guloseimas</label> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4 mb-4">
+        <button type="submit" class="btn btn-success btn-lg mr-2">
+          <i class="fas fa-paper-plane mr-2"></i>Enviar Questionário
+        </button>
+        <a href="../login/menu/menu.php" class="btn btn-secondary btn-lg">
+          <i class="fas fa-arrow-left mr-2"></i>Voltar ao Menu
+        </a>
+      </div>
+    </form>
   </div>
+</div>
 
-
-  <div class="form-group">
-    <label>Você tem costume de fazer as refeições mexendo no computador ou celular?</label><br>
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="usa_dispositivos" id="usa_dispositivos_sim" value="1">
-      <label class="form-check-label" for="usa_dispositivos_sim">Sim</label>
-    </div>
-    <div class="form-check form-check-inline">
-      <input class="form-check-input" type="radio" name="usa_dispositivos" id="usa_dispositivos_nao" value="0">
-      <label class="form-check-label" for="usa_dispositivos_nao">Não</label>
-    </div>
-  </div>
-
-
-  <div class="form-group">
-    <label>Ontem, você consumiu:</label><br>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="feijao" id="feijao" value="1">
-      <label class="form-check-label" for="feijao">Feijão</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="frutas_frescas" id="frutas_frescas" value="1">
-      <label class="form-check-label" for="frutas_frescas">Frutas frescas (não considerar suco)</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="verduras_legumes" id="verduras_legumes" value="1">
-      <label class="form-check-label" for="verduras_legumes">Verduras e/ou legumes (não batata, etc.)</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="hamburguer_embutidos" id="hamburguer_embutidos" value="1">
-      <label class="form-check-label" for="hamburguer_embutidos">Hambúrguer e/ou embutidos</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="bebidas_adocadas" id="bebidas_adocadas" value="1">
-      <label class="form-check-label" for="bebidas_adocadas">Bebidas adoçadas</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="macarrao_instantaneo" id="macarrao_instantaneo" value="1">
-      <label class="form-check-label" for="macarrao_instantaneo">Macarrão instantâneo, salgadinhos</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="biscoitos_recheados" id="biscoitos_recheados" value="1">
-      <label class="form-check-label" for="biscoitos_recheados">Biscoitos recheados, doces</label>
-    </div>
-  </div>
-
-
-  <button type="submit" class="btn btn-primary">Enviar Questionário</button>
-</form>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 </body>
 </html>

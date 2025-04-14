@@ -1,252 +1,323 @@
+<?php
+ session_start();
+ // Verifica se o PARTICIPANTE está logado
+ if (!isset($_SESSION['participante_id'])) {
+  header("Location: ../../login/login.php"); // Ajuste o caminho se necessário
+  exit;
+ }
+
+ // Pega o nome do usuário da sessão
+ $nomeUsuario = $_SESSION['participante_nome'] ?? 'Participante';
+ $userId = $_SESSION['participante_id'];
+
+ // Define qual item do menu está ativo
+ $paginaAtiva = 'relatorios';
+
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <title>Gerar Relatórios - Nutriware</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    /* Estilos adicionais se necessário */
-    .chart-container {
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
+    /* Estilos da Sidebar (Copiar de menu.php) */
+    .wrapper { display: flex; width: 100%; align-items: stretch; min-height: 100vh; }
+    #sidebar { min-width: 250px; max-width: 250px; background: #28a745; color: #fff; transition: all 0.3s; }
+    #sidebar .sidebar-header { padding: 20px; background: #218838; text-align: center; }
+    #sidebar .sidebar-header h3 i { margin-right: 8px; }
+    #sidebar ul.components { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    #sidebar ul li a { padding: 10px 20px; font-size: 1.1em; display: block; color: rgba(255, 255, 255, 0.8); border-left: 3px solid transparent; text-decoration: none; transition: all 0.3s; }
+    #sidebar ul li a:hover { color: #fff; background: #218838; }
+    #sidebar ul li.active > a, a[aria-expanded="true"] { color: #fff; background: #218838; border-left-color: #90EE90; }
+    #sidebar ul li a i { margin-right: 10px; }
+    a[data-toggle="collapse"] { position: relative; }
+    .dropdown-toggle::after { display: block; position: absolute; top: 50%; right: 20px; transform: translateY(-50%); }
+    #sidebar .custom-dropdown-menu { font-size: 0.9em !important; padding-left: 30px !important; background: #218838; }
+    .line { width: 90%; height: 1px; border-bottom: 1px dashed rgba(255,255,255,0.2); margin: 15px auto; }
+    #content { width: 100%; padding: 20px; transition: all 0.3s; background-color: #f8f9fa; }
+    .navbar-top { margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .badge-admin { font-size: 0.7em; background-color: #17a2b8; color: white; }
+    /* Estilos Formulário */
+    .card-header { background-color: #e2f0cb; color: #155724; border-bottom: 1px solid #c3e6cb;} /* Cabeçalho verde bem claro */
+    label { font-weight: 500; }
   </style>
 </head>
-<body class="container mt-4">
-<h1 class="mb-4">Gerar Relatórios Nutriware</h1>
-
-<form action="relatorio_perfil_participante.php" method="POST" class="mb-4" id="report-form">
-  <div class="card mb-4">
-    <div class="card-header">
-      Configurações do Relatório
+<body>
+<div class="wrapper">
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fas fa-leaf"></i> Nutriware</h3>
     </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="tipo_relatorio">1. Tipo de Relatório:</label>
-            <select id="tipo_relatorio" name="tipo_relatorio" class="form-control" required>
-              <option value="perfil">Perfil dos Participantes</option>
-              <option value="inseguranca">Insegurança Alimentar (EBIA)</option>
-              <option value="consumo">Consumo Alimentar</option>
-              <option value="completo">Relatório Completo (Todos os Dados)</option>
-            </select>
-          </div>
+    <ul class="list-unstyled components">
+      <li><a href="../../login/menu/menu.php"><i class="fas fa-home"></i> Menu Principal</a></li>
+      <li>
+        <a href="#questionariosSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+          <i class="fas fa-clipboard-list"></i> Questionários
+        </a>
+        <ul class="collapse list-unstyled custom-dropdown-menu" id="questionariosSubmenu">
+          <li><a href="../ebia.html"><i class="fas fa-balance-scale-right"></i> EBIA</a></li>
+          <li><a href="../consumo_alimentar.html"><i class="fas fa-utensils"></i> Consumo Alimentar</a></li>
+        </ul>
+      </li>
+      <li class="active"> {/* Marca como ativa */}
+        <a href="relatorios.html">
+          <i class="fas fa-chart-pie"></i> Relatórios
+        </a>
+      </li>
+      <div class="line"></div>
+      <li>
+        <a href="#gerenciarSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+          <i class="fas fa-cogs"></i> Gerenciar
+        </a>
+        <ul class="collapse list-unstyled custom-dropdown-menu" id="gerenciarSubmenu">
+          <li><a href="../../login/menu/listar_contas.php"><i class="fas fa-users-cog"></i> Contas <span class="badge badge-admin ml-1">Admin</span></a></li>
+          <li><a href="../../login/menu/editar_conta.php?id=<?php echo $userId; ?>"><i class="fas fa-user-edit"></i> Minha Conta</a></li>
+        </ul>
+      </li>
+      <li><a href="../../login/lagout/logout.php"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+    </ul>
+  </nav>
+
+  <div id="content">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white rounded navbar-top">
+      <div class="container-fluid">
+        <span class="navbar-text ml-auto"> Olá, <strong><?php echo htmlspecialchars($nomeUsuario); ?></strong>! </span>
+      </div>
+    </nav>
+
+    <h2 class="mb-4"><i class="fas fa-filter text-success"></i> Gerar Relatórios Nutriware</h2>
+
+    <form action="" method="POST" class="mb-4" id="report-form"> {/* Action será definida pelo JS */}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+          <i class="fas fa-cogs mr-2"></i>Configurações do Relatório
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>2. Modo de Relatório:</label>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="modo_relatorio" id="modo_filtrado" value="filtrado" checked>
-              <label class="form-check-label" for="modo_filtrado">
-                Filtrado (Aplicar filtros abaixo)
-              </label>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="tipo_relatorio"><strong>1. Tipo de Relatório:</strong></label>
+                <select id="tipo_relatorio" name="tipo_relatorio" class="custom-select" required>
+                  <option value="perfil" selected>Perfil dos Participantes</option>
+                  <option value="inseguranca">Insegurança Alimentar (EBIA)</option>
+                  <option value="consumo">Consumo Alimentar</option>
+                  <option value="completo">Relatório Completo (Todos os Dados)</option>
+                </select>
+              </div>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="modo_relatorio" id="modo_geral" value="geral">
-              <label class="form-check-label" for="modo_geral">
-                Geral (Ignorar filtros)
-              </label>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label><strong>2. Modo de Relatório:</strong></label>
+                <div class="custom-control custom-radio">
+                  <input class="custom-control-input" type="radio" name="modo_relatorio" id="modo_filtrado" value="filtrado" checked>
+                  <label class="custom-control-label" for="modo_filtrado">
+                    Filtrado (Aplicar filtros abaixo)
+                  </label>
+                </div>
+                <div class="custom-control custom-radio">
+                  <input class="custom-control-input" type="radio" name="modo_relatorio" id="modo_geral" value="geral">
+                  <label class="custom-control-label" for="modo_geral">
+                    Geral (Todos os dados, ignorar filtros)
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-header">
-      Filtros (Serão ignorados se o modo 'Geral' for selecionado)
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="idade_min">Idade Mínima:</label>
-            <input type="number" id="idade_min" name="idade_min" class="form-control" min="0" placeholder="Ex: 18">
-          </div>
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <i class="fas fa-filter mr-2"></i>Filtros <small class="text-muted">(Opcionais - ignorados no modo 'Geral')</small>
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="idade_max">Idade Máxima:</label>
-            <input type="number" id="idade_max" name="idade_max" class="form-control" min="0" placeholder="Ex: 60">
-          </div>
-        </div>
+        <div class="card-body bg-light" id="filtros-container"> {/* Fundo claro para área de filtros */}
+          <div class="row">
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="idade_min">Idade Mínima:</label>
+                <input type="number" id="idade_min" name="idade_min" class="form-control" min="0" placeholder="Ex: 18">
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="idade_max">Idade Máxima:</label>
+                <input type="number" id="idade_max" name="idade_max" class="form-control" min="0" placeholder="Ex: 60">
+              </div>
+            </div>
 
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="genero">Gênero:</label>
-            <select id="genero" name="genero" class="form-control">
-              <option value="">Todos</option>
-              <option value="masculino">Masculino</option>
-              <option value="feminino">Feminino</option>
-              <option value="transgenero">Transgênero</option>
-              <option value="nao_binario">Não Binário</option>
-              <option value="outro">Outro</option>
-              <option value="prefere_nao_dizer">Prefere não dizer</option>
-            </select>
-          </div>
-        </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="genero">Gênero:</label>
+                <select id="genero" name="genero" class="custom-select">
+                  <option value="" selected>Todos</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="feminino">Feminino</option>
+                  <option value="transgenero">Transgênero</option>
+                  <option value="nao_binario">Não Binário</option>
+                  <option value="outro">Outro</option>
+                  <option value="prefere_nao_dizer">Prefere não dizer</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="raca">Raça/Cor:</label>
-            <select id="raca" name="raca" class="form-control">
-              <option value="">Todas</option>
-              <option value="branco">Branco</option>
-              <option value="preto">Preto</option>
-              <option value="pardo">Pardo</option>
-              <option value="povos_originarios">Povos originários</option>
-              <option value="outro">Outro</option>
-              <option value="prefere_nao_dizer">Prefere não dizer</option>
-            </select>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="escolaridade">Escolaridade:</label>
-            <select id="escolaridade" name="escolaridade" class="form-control">
-              <option value="">Todas</option>
-              <option value="ensino_fundamental_incompleto">Ensino fundamental incompleto</option>
-              <option value="ensino_fundamental_completo">Ensino fundamental completo</option>
-              <option value="ensino_medio_incompleto">Ensino médio incompleto</option>
-              <option value="ensino_medio_completo">Ensino médio completo</option>
-              <option value="graduacao_incompleta">Graduação incompleta</option>
-              <option value="graduacao_completa">Graduação completa</option>
-              <option value="outro">Outro</option>
-              <option value="prefere_nao_dizer">Prefere não dizer</option>
-            </select>
-          </div>
-        </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="raca">Raça/Cor:</label>
+                <select id="raca" name="raca" class="custom-select">
+                  <option value="" selected>Todas</option>
+                  <option value="branco">Branco</option>
+                  <option value="preto">Preto</option>
+                  <option value="pardo">Pardo</option>
+                  <option value="povos_originarios">Povos originários</option>
+                  <option value="outro">Outro</option>
+                  <option value="prefere_nao_dizer">Prefere não dizer</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="escolaridade">Escolaridade:</label>
+                <select id="escolaridade" name="escolaridade" class="custom-select">
+                  <option value="" selected>Todas</option>
+                  <option value="ensino_fundamental_incompleto">Ensino fundamental incompleto</option>
+                  <option value="ensino_fundamental_completo">Ensino fundamental completo</option>
+                  <option value="ensino_medio_incompleto">Ensino médio incompleto</option>
+                  <option value="ensino_medio_completo">Ensino médio completo</option>
+                  <option value="graduacao_incompleta">Graduação incompleta</option>
+                  <option value="graduacao_completa">Graduação completa</option>
+                  <option value="outro">Outro</option>
+                  <option value="prefere_nao_dizer">Prefere não dizer</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="situacao_emprego">Situação de Trabalho:</label>
-            <select id="situacao_emprego" name="situacao_emprego" class="form-control">
-              <option value="">Todas</option>
-              <option value="meio_periodo">Meio período</option>
-              <option value="tempo_integral">Tempo integral</option>
-              <option value="autonomo">Autônomo</option>
-              <option value="desempregado">Desempregado</option>
-              <option value="incapaz_trabalhar">Incapaz de trabalhar</option>
-              <option value="aposentado">Aposentado</option>
-              <option value="estudante">Estudante</option>
-              <option value="outro">Outro</option>
-              <option value="prefere_nao_dizer">Prefere não dizer</option>
-            </select>
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="situacao_emprego">Situação de Trabalho:</label>
+                <select id="situacao_emprego" name="situacao_emprego" class="custom-select">
+                  <option value="" selected>Todas</option>
+                  <option value="meio_periodo">Meio período</option>
+                  <option value="tempo_integral">Tempo integral</option>
+                  <option value="autonomo">Autônomo</option>
+                  <option value="desempregado">Desempregado</option>
+                  <option value="incapaz_trabalhar">Incapaz de trabalhar</option>
+                  <option value="aposentado">Aposentado</option>
+                  <option value="estudante">Estudante</option>
+                  <option value="outro">Outro</option>
+                  <option value="prefere_nao_dizer">Prefere não dizer</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="estado_civil">Estado Civil:</label>
+                <select id="estado_civil" name="estado_civil" class="custom-select">
+                  <option value="" selected>Todos</option>
+                  <option value="solteiro">Solteiro(a)</option>
+                  <option value="casado">Casado(a)</option>
+                  <option value="divorciado">Divorciado(a)</option>
+                  <option value="viuvo">Viúvo(a)</option>
+                  <option value="separado">Separado(a)</option>
+                  <option value="uniao_estavel">União Estável</option>
+                  <option value="prefere_nao_dizer">Prefere não dizer</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <div class="form-group">
+                <label for="religiao">Religião:</label>
+                <select id="religiao" name="religiao" class="custom-select">
+                  <option value="" selected>Todas</option>
+                  <option value="catolico">Católico</option>
+                  <option value="evangelico">Evangélico</option>
+                  <option value="espirita">Espírita</option>
+                  <option value="umbanda">Umbanda</option>
+                  <option value="candomble">Candomblé</option>
+                  <option value="ateu">Ateu</option>
+                  <option value="nenhum">Nenhuma</option>
+                  <option value="outro">Outro</option>
+                  <option value="prefere_nao_dizer">Prefere não dizer</option>
+                </select>
+              </div>
+            </div>
+
           </div>
         </div>
-
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="estado_civil">Estado Civil:</label>
-            <select id="estado_civil" name="estado_civil" class="form-control">
-              <option value="">Todos</option>
-              <option value="solteiro">Solteiro(a)</option>
-              <option value="casado">Casado(a)</option>
-              <option value="divorciado">Divorciado(a)</option>
-              <option value="viuvo">Viúvo(a)</option>
-              <option value="separado">Separado(a)</option>
-              <option value="uniao_estavel">União Estável</option>
-              <option value="prefere_nao_dizer">Prefere não dizer</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="religiao">Religião:</label>
-            <select id="religiao" name="religiao" class="form-control">
-              <option value="">Todas</option>
-              <option value="catolico">Católico</option>
-              <option value="evangelico">Evangélico</option>
-              <option value="espirita">Espírita</option>
-              <option value="umbanda">Umbanda</option>
-              <option value="candomble">Candomblé</option>
-              <option value="ateu">Ateu</option>
-              <option value="nenhum">Nenhuma</option>
-              <option value="outro">Outro</option>
-              <option value="prefere_nao_dizer">Prefere não dizer</option>
-            </select>
-          </div>
-        </div>
-
       </div>
-    </div>
-  </div>
 
-  <button type="submit" class="btn btn-primary mt-3">Gerar Relatório na Tela</button>
-  <button type="submit" name="exportar" value="csv" class="btn btn-success mt-3">Exportar para CSV</button> <a href="../../login/menu/menu.php" class="btn btn-secondary mt-3">Voltar ao Menu</a> </form>
+      <div class="mt-4 text-center">
+        <button type="submit" class="btn btn-success btn-lg mr-2">
+          <i class="fas fa-eye mr-1"></i> Gerar Relatório na Tela
+        </button>
+        <button type="submit" name="exportar" value="csv" class="btn btn-info btn-lg mr-2" formtarget="_blank"> {/* Abre CSV em nova aba */}
+          <i class="fas fa-file-csv mr-1"></i> Exportar para CSV
+        </button>
+        <a href="../../login/menu/menu.php" class="btn btn-secondary btn-lg">
+          <i class="fas fa-arrow-left mr-1"></i> Voltar ao Menu
+        </a>
+      </div>
+    </form>
 
-<div id="report-results" class="mt-5">
-</div>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </div> </div> <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const reportForm = document.getElementById('report-form');
     const reportTypeSelect = document.getElementById('tipo_relatorio');
+    const filtrosContainer = document.getElementById('filtros-container');
+    const modoRadios = document.querySelectorAll('input[name="modo_relatorio"]');
 
-    if (reportForm && reportTypeSelect) {
-      reportForm.addEventListener('submit', function(event) {
+    // Define o Action do formulário baseado no tipo selecionado
+    function updateFormAction() {
         const selectedType = reportTypeSelect.value;
-        let targetAction = ''; // Inicia vazio
-
-        // Define o arquivo PHP de destino baseado no tipo selecionado
+        let targetAction = '';
         switch (selectedType) {
-          case 'perfil':
-            targetAction = 'relatorio_perfil_participante.php';
-            break;
-          case 'inseguranca':
-            targetAction = 'relatorio_ebia.php'; // Script específico para EBIA
-            break;
-          case 'consumo':
-            targetAction = 'relatorio_consumo_alimentar.php'; // Script específico para Consumo
-            break;
-          case 'completo':
-            targetAction = 'relatorio_completo.php'; // ****** ALTERAÇÃO AQUI ******
-            break;
-          default:
-             targetAction = 'relatorio_perfil_participante.php'; // Fallback seguro
+          case 'perfil': targetAction = 'relatorio_perfil_participante.php'; break;
+          case 'inseguranca': targetAction = 'relatorio_ebia.php'; break;
+          case 'consumo': targetAction = 'relatorio_consumo_alimentar.php'; break;
+          case 'completo': targetAction = 'relatorio_completo.php'; break;
+          default: targetAction = 'relatorio_perfil_participante.php'; // Fallback
         }
-
-        // Atualiza o atributo 'action' do formulário ANTES de enviar
-        if(targetAction) {
-            reportForm.action = targetAction;
-        } else {
-            console.error("Tipo de relatório inválido selecionado.");
-            event.preventDefault(); // Impede o envio se a ação não for definida
-            return;
-        }
-        // O formulário continuará o envio normalmente após este script
-      });
+        reportForm.action = targetAction;
     }
 
-    // Script para desabilitar/habilitar filtros (MANTIDO)
-    const modoRadios = document.querySelectorAll('input[name="modo_relatorio"]');
-    const filterCardBody = document.querySelector('.card-body .row'); // Seleciona a área dos filtros
-
+    // Desabilita/Habilita filtros baseado no modo
     function toggleFilters() {
-        if (!filterCardBody) return; // Sai se a área de filtros não for encontrada
-        const modoGeral = document.getElementById('modo_geral').checked;
-        const filterInputs = filterCardBody.querySelectorAll('input, select');
+        const modoGeralChecked = document.getElementById('modo_geral').checked;
+        const filterInputs = filtrosContainer.querySelectorAll('input, select');
         filterInputs.forEach(input => {
-            input.disabled = modoGeral;
-            if(modoGeral) {
-                input.classList.add('bg-light'); // Estilo visual para desabilitado
+            input.disabled = modoGeralChecked;
+            if(modoGeralChecked) {
+                input.classList.add('bg-white'); // Torna branco para não parecer tão desabilitado
+                input.value = ''; // Limpa o valor se desabilitado
             } else {
-                input.classList.remove('bg-light');
+                input.classList.remove('bg-white');
             }
         });
+        // Adiciona/Remove uma classe para estilização visual da área de filtros
+        if(modoGeralChecked) {
+            filtrosContainer.style.opacity = '0.6';
+            filtrosContainer.style.pointerEvents = 'none';
+        } else {
+            filtrosContainer.style.opacity = '1';
+            filtrosContainer.style.pointerEvents = 'auto';
+        }
     }
 
+    // Event Listeners
+    reportTypeSelect.addEventListener('change', updateFormAction);
     modoRadios.forEach(radio => radio.addEventListener('change', toggleFilters));
-    toggleFilters(); // Chama no início para definir o estado inicial
+
+    // Chamadas iniciais
+    updateFormAction();
+    toggleFilters();
   });
 </script>
 </body>
