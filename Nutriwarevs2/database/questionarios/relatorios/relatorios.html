@@ -80,10 +80,10 @@
             <label for="genero">Gênero:</label>
             <select id="genero" name="genero" class="form-control">
               <option value="">Todos</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Feminino">Feminino</option>
-              <option value="Transgênero">Transgênero</option>
-              <option value="NaoBinario">Não Binário</option>
+              <option value="masculino">Masculino</option>
+              <option value="feminino">Feminino</option>
+              <option value="transgenero">Transgênero</option>
+              <option value="nao_binario">Não Binário</option>
               <option value="outro">Outro</option>
               <option value="prefere_nao_dizer">Prefere não dizer</option>
             </select>
@@ -102,10 +102,8 @@
               <option value="outro">Outro</option>
               <option value="prefere_nao_dizer">Prefere não dizer</option>
             </select>
-            <small class="form-text text-muted">Filtra pelo valor base.</small>
           </div>
         </div>
-
         <div class="col-md-6">
           <div class="form-group">
             <label for="escolaridade">Escolaridade:</label>
@@ -120,7 +118,6 @@
               <option value="outro">Outro</option>
               <option value="prefere_nao_dizer">Prefere não dizer</option>
             </select>
-            <small class="form-text text-muted">Filtra pelo valor base.</small>
           </div>
         </div>
 
@@ -139,7 +136,6 @@
               <option value="outro">Outro</option>
               <option value="prefere_nao_dizer">Prefere não dizer</option>
             </select>
-            <small class="form-text text-muted">Filtra pelo valor base.</small>
           </div>
         </div>
 
@@ -174,7 +170,6 @@
               <option value="outro">Outro</option>
               <option value="prefere_nao_dizer">Prefere não dizer</option>
             </select>
-            <small class="form-text text-muted">Filtra pelo valor base.</small>
           </div>
         </div>
 
@@ -183,8 +178,7 @@
   </div>
 
   <button type="submit" class="btn btn-primary mt-3">Gerar Relatório na Tela</button>
-  <button type="submit" name="exportar" value="csv" class="btn btn-secondary mt-3">Exportar para CSV</button>
-</form>
+  <button type="submit" name="exportar" value="csv" class="btn btn-success mt-3">Exportar para CSV</button> <a href="../../login/menu/menu.php" class="btn btn-secondary mt-3">Voltar ao Menu</a> </form>
 
 <div id="report-results" class="mt-5">
 </div>
@@ -201,7 +195,7 @@
     if (reportForm && reportTypeSelect) {
       reportForm.addEventListener('submit', function(event) {
         const selectedType = reportTypeSelect.value;
-        let targetAction = 'relatorio_perfil_participante.php'; // Default action
+        let targetAction = ''; // Inicia vazio
 
         // Define o arquivo PHP de destino baseado no tipo selecionado
         switch (selectedType) {
@@ -209,42 +203,50 @@
             targetAction = 'relatorio_perfil_participante.php';
             break;
           case 'inseguranca':
-             // O script de perfil já trata insegurança com base no 'tipo_relatorio' enviado
-            targetAction = 'relatorio_ebia.php';
+            targetAction = 'relatorio_ebia.php'; // Script específico para EBIA
             break;
           case 'consumo':
-            targetAction = 'relatorio_consumo_alimentar.php'; // <--- CORREÇÃO AQUI
+            targetAction = 'relatorio_consumo_alimentar.php'; // Script específico para Consumo
             break;
           case 'completo':
-            // O script de perfil já trata o completo com base no 'tipo_relatorio' enviado
-            targetAction = 'relatorio_perfil_participante.php';
+            targetAction = 'relatorio_completo.php'; // ****** ALTERAÇÃO AQUI ******
             break;
           default:
-             // Mantém o default se algo inesperado for selecionado
-             targetAction = 'relatorio_perfil_participante.php';
+             targetAction = 'relatorio_perfil_participante.php'; // Fallback seguro
         }
 
         // Atualiza o atributo 'action' do formulário ANTES de enviar
-        reportForm.action = targetAction;
-
+        if(targetAction) {
+            reportForm.action = targetAction;
+        } else {
+            console.error("Tipo de relatório inválido selecionado.");
+            event.preventDefault(); // Impede o envio se a ação não for definida
+            return;
+        }
         // O formulário continuará o envio normalmente após este script
       });
     }
 
-    // Script para desabilitar/habilitar filtros (SEU CÓDIGO ORIGINAL)
+    // Script para desabilitar/habilitar filtros (MANTIDO)
     const modoRadios = document.querySelectorAll('input[name="modo_relatorio"]');
     const filterCardBody = document.querySelector('.card-body .row'); // Seleciona a área dos filtros
 
     function toggleFilters() {
-      const modoGeral = document.getElementById('modo_geral').checked;
-      const filterInputs = filterCardBody.querySelectorAll('input, select');
-      filterInputs.forEach(input => {
-        input.disabled = modoGeral;
-      });
+        if (!filterCardBody) return; // Sai se a área de filtros não for encontrada
+        const modoGeral = document.getElementById('modo_geral').checked;
+        const filterInputs = filterCardBody.querySelectorAll('input, select');
+        filterInputs.forEach(input => {
+            input.disabled = modoGeral;
+            if(modoGeral) {
+                input.classList.add('bg-light'); // Estilo visual para desabilitado
+            } else {
+                input.classList.remove('bg-light');
+            }
+        });
     }
 
     modoRadios.forEach(radio => radio.addEventListener('change', toggleFilters));
-    toggleFilters(); // Chama no início
+    toggleFilters(); // Chama no início para definir o estado inicial
   });
 </script>
 </body>
