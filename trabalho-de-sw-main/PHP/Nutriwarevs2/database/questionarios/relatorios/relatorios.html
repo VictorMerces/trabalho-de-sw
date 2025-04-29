@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerar Relatórios</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+  <h1 class="mb-4">Gerar Relatórios</h1>
+  <form action="relatorios.php" method="POST" class="mb-4">
+    <div class="form-group">
+      <label for="tipo_relatorio">Tipo de Relatório:</label>
+      <select id="tipo_relatorio" name="tipo_relatorio" class="form-control">
+        <option value="inseguranca">Insegurança Alimentar</option>
+        <option value="consumo">Consumo Alimentar</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="genero">Filtrar por Gênero:</label>
+      <select id="genero" name="genero" class="form-control">
+        <option value="">Todos</option>
+        <option value="Masculino">Masculino</option>
+        <option value="Feminino">Feminino</option>
+        <option value="Transgênero">Transgênero</option>
+        <option value="NaoBinario">Não Binário</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="faixa_etaria">Filtrar por Faixa Etária:</label>
+      <select id="faixa_etaria" name="faixa_etaria" class="form-control">
+        <option value="">Todas</option>
+        <option value="18-25">18 - 25 anos</option>
+        <option value="26-35">26 - 35 anos</option>
+        <option value="36-45">36 - 45 anos</option>
+        <option value="45-60">45 - 60 anos</option>
+        <option value="60-100">Mais de 60 anos</option>
+      </select>
+    </div>
+    <!-- Campo oculto para paginação -->
+    <input type="hidden" name="page" value="1">
+    <button type="submit" class="btn btn-primary">Gerar Relatório</button>
+  </form>
+
+  <?php if (!empty($relatorio)): ?>
+  <div class="table-responsive">
+    <h2>Resultados do Relatório</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <?php foreach (array_keys($relatorio[0]) as $coluna): ?>
+          <th><?php echo htmlspecialchars($coluna); ?></th>
+          <?php endforeach; ?>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($relatorio as $linha): ?>
+        <tr>
+          <?php foreach ($linha as $valor): ?>
+          <td><?php echo htmlspecialchars($valor); ?></td>
+          <?php endforeach; ?>
+        </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <form action="relatorios/relatorios.php" method="POST" class="mt-3">
+    <!-- Preservar filtros para exportação -->
+    <input type="hidden" name="tipo_relatorio" value="<?php echo $tipo_relatorio; ?>">
+    <input type="hidden" name="genero" value="<?php echo $_POST['genero'] ?? ''; ?>">
+    <input type="hidden" name="faixa_etaria" value="<?php echo $_POST['faixa_etaria'] ?? ''; ?>">
+    <input type="hidden" name="exportar" value="csv">
+    <button type="submit" class="btn btn-secondary">Exportar para CSV</button>
+  </form>
+  <?php endif; ?>
+</body>
+</html>

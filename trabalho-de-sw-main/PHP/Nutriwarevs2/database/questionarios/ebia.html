@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Questionário EBIA</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="ebiacss.css"/>
+</head>
+<body>
+  <h1>Escala Brasileira de Insegurança Alimentar (EBIA)</h1>
+
+  <div class="formulario-ebia">
+    <a href="/PHP/Nutriwarevs2/index.html" class="btn btn-secondary mb-3">Voltar ao Menu</a>
+
+
+    <form action="ebia.php" method="POST">
+      <p>Responda as perguntas abaixo com SIM ou NÃO:</p>
+
+      <div class="form-group">
+        <label>1. Nos últimos três meses, os moradores deste domicílio tiveram a preocupação de que os alimentos acabassem antes de poderem comprar ou receber mais comida?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p1" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p1" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>2. Nos últimos três meses, os alimentos acabaram antes que os moradores deste domicílio tivessem dinheiro para comprar mais comida?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p2" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p2" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>3. Nos últimos três meses, os moradores deste domicílio ficaram sem dinheiro para ter uma alimentação saudável e variada?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p3" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p3" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>4. Nos últimos três meses, os moradores deste domicílio comeram apenas alguns poucos tipos de alimentos que ainda tinham, porque o dinheiro acabou?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p4" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p4" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>5. Nos últimos três meses, algum/a morador/a de 18 anos ou mais de idade deixou de fazer alguma refeição, porque não havia dinheiro para comprar comida?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p5" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p5" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>6. Nos últimos três meses, algum/a morador/a de 18 anos ou mais de idade, alguma vez, comeu menos do que achou que devia, porque não havia dinheiro para comprar comida?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p6" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p6" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>7. Nos últimos três meses, algum/a morador/a de 18 anos ou mais de idade, alguma vez, sentiu fome, mas não comeu, porque não havia dinheiro para comprar comida?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p7" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p7" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>8. Nos últimos três meses, algum/a morador/a de 18 anos ou mais de idade, alguma vez, fez apenas uma refeição ao dia ou ficou um dia inteiro sem comer porque não havia dinheiro para comprar comida?</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p8" value="1" required>
+          <label class="form-check-label">Sim</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="p8" value="0">
+          <label class="form-check-label">Não</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Enviar Questionário</button>
+    </form>
+  </div>
+</body>
+</html>
